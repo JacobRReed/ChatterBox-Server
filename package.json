@@ -1,0 +1,29 @@
+{
+  "name": "450-lab",
+  "version": "1.0.0",
+  "description": "TCSS 450 Lab for creating a webservice",
+  "main": "index.js",
+  "scripts": {
+    "test": "index.js"
+  },
+  "keywords": [
+    "TCSS450",
+    "Mobile",
+    "Apps"
+  ],
+  "author": "Myles Haynes",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "form-data": "^2.3.2",
+    "mysql": "^2.15.0",
+    "npm": "^5.8.0",
+    "pg": "^7.4.1",
+    "pg-promise": "^8.1.1"
+  },
+  "devDependencies": {
+    "install": "^0.11.0",
+    "vuetable-2": "^1.7.5"
+  }
+}
