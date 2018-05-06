@@ -32,7 +32,6 @@ router.post('/', (req, res) => {
                     .then(row => {
                         let friends = row['memberid'];
                         res.send({
-                            success: true,
                             friend: friends
                         });
                     });
