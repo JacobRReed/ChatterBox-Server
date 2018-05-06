@@ -28,14 +28,14 @@ router.post('/', (req, res) => {
             //If successful, run function passed into .then()
             .then(row => {
                 let memberID = row['memberid'];
-                db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1', [memberID]);
-                .then(row => {
-                    let friends = row['memberid'];
-                    res.send({
-                        success: true,
-                        friend: friends
+                db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1', [memberID])
+                    .then(row => {
+                        let friends = row['memberid'];
+                        res.send({
+                            success: true,
+                            friend: friends
+                        });
                     });
-                });
             })
             //More than one row shouldn't be found, since table has constraint on it
             .catch((err) => {
