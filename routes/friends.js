@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
 
     if (user) {
         //Using the 'one' method means that only one row should be returned
-        db.one('SELECT memberid FROM Members WHERE username=$1', [user])
+        db.one('SELECT memberid FROM Members WHERE username LIKE $1', [user])
             //If successful, run function passed into .then()
             .then(row => {
                 let memberID = row['memberid'];
