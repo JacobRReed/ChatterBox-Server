@@ -33,12 +33,13 @@ router.post('/', (req, res) => {
                         for (i = 0; i < row.length; i++) {
                             membersIDList.push(row[i].memberid_b);
                         }
+                        console.log("membersIDList: " + membersIDList);
 
                         //Retrieve usernames of all ids
                         let usernamesOfFriends = [];
                         for (var x in membersIDList) {
-                            console.log(membersIDList.x);
-                            db.manyOrNone('SELECT username FROM Members WHERE memberid=$1', [membersIDList.x])
+                            console.log(membersIDList[x]);
+                            db.manyOrNone('SELECT username FROM Members WHERE memberid=$1', [membersIDList[x]])
                                 .then(name => {
                                     usernamesOfFriends.push(name);
                                 });
