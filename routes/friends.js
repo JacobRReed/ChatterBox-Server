@@ -22,7 +22,7 @@ router.post('/', (req, res) => {
     let remove = req.body['remove'];
     let friend = req.body['friend'];
     console.log("User to fetch friends for: " + user);
-    if (user) {
+    if (user && !remove && !friend) {
         //Using the 'one' method means that only one row should be returned
         db.one('SELECT memberid FROM Members WHERE username LIKE $1', [user])
             //If successful, run function passed into .then()
