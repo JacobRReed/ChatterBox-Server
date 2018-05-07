@@ -39,12 +39,12 @@ router.post('/', (req, res) => {
                         let usernamesOfFriends = [];
                         db.manyOrNone('SELECT username FROM Members WHERE memberid = ANY($1)', [membersIDList])
                             .then(usernames => {
-                                console.log(usernames);
+                                console.log("Recieved Data Query:" + usernames);
                                 for (i = 0; i < usernames.length; i++) {
                                     usernamesOfFriends.push(usernames[i].username);
                                 }
                             })
-                        console.log(usernamesOfFriends);
+                        console.log("Result array: " + usernamesOfFriends);
                         res.send({
                             friends: usernamesOfFriends
                         });
