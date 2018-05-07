@@ -29,8 +29,9 @@ router.post('/', (req, res) => {
                 db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1', [memberID])
                     .then(row => {
                         let members = [];
-                        console.log(row[Object.keys(row)]);
-
+                        for (var val in row) {
+                            console.log(row.val);
+                        }
                         let usernamesOfFriends = [];
                         for (i = 0; i < row.length; i++) {
                             db.manyOrNone('SELECT username FROM Members WHERE memberid=$1', [row[i].value])
