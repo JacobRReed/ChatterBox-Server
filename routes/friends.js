@@ -19,6 +19,8 @@ var router = express.Router();
 //app.get('/users') means accept http 'GET' requests at path '/users'
 router.post('/', (req, res) => {
     let user = req.body['username'];
+    let remove = req.body['remove'];
+    let friend = req.body['friend'];
     console.log("User to fetch friends for: " + user);
     if (user) {
         //Using the 'one' method means that only one row should be returned
@@ -57,6 +59,30 @@ router.post('/', (req, res) => {
                     success: false,
                     message: err
                 });
+            });
+    } else if (user && remove && friend) {
+        //REMOVE FRIEND
+        console.log("Removing friend " + friend + " of " + user + ": (" + remove + ")");
+        db.one('SELECT memberid FROM Members WHERE username LIKE $1', [user])
+            .then(data => {
+                console.log("User id:" + data.username);
+                db.one('SELECT memberid FROM Members WHERE username LIKE $1', [friend])
+                    .then(dataTwo => {
+                        console.log("Friend id:" + dataTwo.username);
+                        db.result('DELETE FROM Contacts WHERE (memberid_a=$1 OR memberid_b=$1) AND (memberid_a=$2 OR memberid_b=$2', [user], [friend])
+                            .then(result => {
+                                //good to go
+                                console.log("Friend " + friend + " removed from " + user + "'s contacts");
+                                res.send({
+                                    result: true;
+                                });
+                            })
+                    });
+            })
+            .catch((err) => {
+                res.send({
+                    result: false;
+                })
             });
     }
 });
