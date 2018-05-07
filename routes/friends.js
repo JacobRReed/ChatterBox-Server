@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
                         //Pull out all member IDS
                         this.membersIDList = [];
                         for (i = 0; i < row.length; i++) {
-                            membersIDList.push(row[i].memberid_b);
+                            this.membersIDList.push(row[i].memberid_b);
                         }
                         console.log("membersIDList: " + this.membersIDList);
 
