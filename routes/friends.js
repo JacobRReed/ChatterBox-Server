@@ -43,11 +43,11 @@ router.post('/', (req, res) => {
                                 for (i = 0; i < data.length; i++) {
                                     usernamesOfFriends.push(data[i].username);
                                 }
+                                console.log("Result array: " + usernamesOfFriends);
+                                res.send({
+                                    friends: usernamesOfFriends
+                                });
                             })
-                        console.log("Result array: " + usernamesOfFriends);
-                        res.send({
-                            friends: usernamesOfFriends
-                        });
                     });
             })
             //More than one row shouldn't be found, since table has constraint on it
