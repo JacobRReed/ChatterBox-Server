@@ -32,7 +32,7 @@ router.post('/', (req, res) => {
                         console.log(row[1]);
                         console.log("Trying for loop");
                         for (i = 0; i < row.length; i++) {
-                            console.log(row[i]);
+                            console.log(row[i].memberid_b || row[i].memberid_a);
                         }
                         let usernamesOfFriends = [];
                         for (i = 0; i < row.length; i++) {
