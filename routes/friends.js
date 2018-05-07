@@ -65,11 +65,11 @@ router.post('/', (req, res) => {
         console.log("Removing friend " + friend + " of " + user + ": (" + remove + ")");
         db.one('SELECT memberid FROM Members WHERE username LIKE $1', [user])
             .then(data => {
-                console.log("User id:" + data.username);
+                console.log("User id:" + data.memberid);
                 db.one('SELECT memberid FROM Members WHERE username LIKE $1', [friend])
                     .then(dataTwo => {
-                        console.log("Friend id:" + dataTwo.username);
-                        db.result('DELETE FROM Contacts WHERE (memberid_a=$1 OR memberid_b=$1) AND (memberid_a=$2 OR memberid_b=$2', [user], [friend])
+                        console.log("Friend id:" + dataTwo.memberid);
+                        db.result('DELETE FROM Contacts WHERE (memberid_a=$1 OR memberid_b=$1) AND (memberid_a=$2 OR memberid_b=$2', [data.memberid], [dataTwo.memberid])
                             .then(result => {
                                 //good to go
                                 console.log("Friend " + friend + " removed from " + user + "'s contacts");
