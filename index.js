@@ -33,6 +33,9 @@ app.use('/', msg);
 var friends = require('./routes/friends.js');
 app.use('/friends', friends);
 
+var invite = require('./routes/invite.js');
+app.use('/invite', invite);
+
 /*
  * Return HTML for the / end point.
  * This is a nice location to document your web service API

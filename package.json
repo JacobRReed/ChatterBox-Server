@@ -14,6 +14,7 @@
   "author": "Myles Haynes",
   "license": "MIT",
   "dependencies": {
+    "@sendgrid/mail": "^6.2.1",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "form-data": "^2.3.2",
