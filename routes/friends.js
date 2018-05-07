@@ -37,9 +37,12 @@ router.post('/', (req, res) => {
 
                         //Retrieve usernames of all ids
                         let usernamesOfFriends = [];
-                        inSetStr = ("$#{i}"
-                            for i in [1...membersIDList.length]).join(',');
-                        console.log(inSetStr);
+                        db.manyOrNone('SELECT username FROM Members WHERE memberid=ANY($1)', membersIDList)
+                            .then(usernames => {
+                                for (i = 0; i < usernames.length; i++) {
+                                    usernamesOfFriends.push(usernames[i].username);
+                                }
+                            })
                         console.log(usernamesOfFriends);
                         res.send({
                             friends: usernamesOfFriends
