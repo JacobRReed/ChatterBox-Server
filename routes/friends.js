@@ -30,8 +30,17 @@ router.post('/', (req, res) => {
                 let memberID = row['memberid'];
                 db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1', [memberID])
                     .then(row => {
+                        console.log("Friends: " + row);
+                        let usernamesOfFriends = [];
+                        for (i = 0; i < row.length; i++) {
+                            db.manyOrNone('SELECT username FROM Members WHERE memberid=$1', [row[i]])
+                                .then(name => ) {
+                                    usernamesOfFriends.push(name);
+                                }
+                        }
+                        console.log(usernamesOfFriends);
                         res.send({
-                            friends: row
+                            friends: usernamesOfFriends
                         });
                     });
             })
@@ -43,11 +52,6 @@ router.post('/', (req, res) => {
                     message: err
                 });
             });
-    } else {
-        res.send({
-            success: false,
-            message: 'missing credentials'
-        });
     }
 });
 
