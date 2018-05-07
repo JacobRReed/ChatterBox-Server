@@ -26,17 +26,18 @@ router.post('/', (req, res) => {
             //If successful, run function passed into .then()
             .then(row => {
                 let memberID = row['memberid'];
-                db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1', [memberID])
+                db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1', memberID)
                     .then(row => {
                         //Pull out all member IDS
                         membersIDList = [];
                         for (i = 0; i < row.length; i++) {
                             membersIDList.push(row[i].memberid_b);
                         }
+                        console.log(membersIDList);
                         //Retrieve usernames of all ids
                         let usernamesOfFriends = [];
                         for (i = 0; i < membersIDList.length; i++) {
-                            db.manyOrNone('SELECT username FROM Members WHERE memberid=$1', [membersIDList[i]])
+                            db.manyOrNone('SELECT username FROM Members WHERE memberid=$1', membersIDList[i])
                                 .then(name => {
                                     usernamesOfFriends.push(name);
                                 });
