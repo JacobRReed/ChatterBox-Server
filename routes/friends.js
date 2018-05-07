@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
                         //Pull out all member IDS
                         membersIDList = [];
                         for (i = 0; i < row.length; i++) {
-                            membersIDList.append(row[i].memberid_b);
+                            membersIDList.push(row[i].memberid_b);
                         }
                         //Retrieve usernames of all ids
                         let usernamesOfFriends = [];
