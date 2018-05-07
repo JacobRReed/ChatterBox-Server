@@ -38,10 +38,10 @@ router.post('/', (req, res) => {
                         //Retrieve usernames of all ids
                         let usernamesOfFriends = [];
                         db.manyOrNone('SELECT username FROM Members WHERE memberid = ANY($1)', [membersIDList])
-                            .then(usernames => {
-                                console.log("Recieved Data Query:" + usernames);
-                                for (i = 0; i < usernames.length; i++) {
-                                    usernamesOfFriends.push(usernames[i].username);
+                            .then(data => {
+                                console.log("Recieved Data Query:" + JSON.stringify(data));
+                                for (i = 0; i < data.length; i++) {
+                                    usernamesOfFriends.push(data[i].username);
                                 }
                             })
                         console.log("Result array: " + usernamesOfFriends);
