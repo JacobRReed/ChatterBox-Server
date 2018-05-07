@@ -30,9 +30,8 @@ router.post('/', (req, res) => {
                 let memberID = row['memberid'];
                 db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1', [memberID])
                     .then(row => {
-                        let friends = row['memberid'];
                         res.send({
-                            friend: friends
+                            friends: row
                         });
                     });
             })
