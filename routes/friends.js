@@ -29,21 +29,17 @@ router.post('/', (req, res) => {
                 db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1', [memberID])
                     .then(row => {
                         //Pull out all member IDS
-                        this.membersIDList = [];
+                        membersIDList = [];
                         for (i = 0; i < row.length; i++) {
-                            this.membersIDList.push(row[i].memberid_b);
+                            membersIDList.push(row[i].memberid_b);
                         }
-                        console.log("membersIDList: " + this.membersIDList);
+                        console.log("membersIDList: " + membersIDList);
 
                         //Retrieve usernames of all ids
                         let usernamesOfFriends = [];
-                        for (var x in this.membersIDList) {
-                            console.log(this.membersIDList[x]);
-                            db.manyOrNone('SELECT username FROM Members WHERE memberid=$1', this.membersIDList[x])
-                                .then(name => {
-                                    usernamesOfFriends.push(name);
-                                });
-                        }
+                        inSetStr = ("$#{i}"
+                            for i in [1...membersIDList.length]).join(',');
+                        console.log(inSetStr);
                         console.log(usernamesOfFriends);
                         res.send({
                             friends: usernamesOfFriends
