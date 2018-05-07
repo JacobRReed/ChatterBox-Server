@@ -77,7 +77,11 @@ router.post('/', (req, res) => {
                                     result: true
                                 });
                             })
-                    });
+                    }).catch((err) => {
+                        res.send({
+                            result: false
+                        })
+                    })
             })
             .catch((err) => {
                 res.send({
