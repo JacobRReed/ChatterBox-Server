@@ -39,7 +39,7 @@ router.post('/', (req, res) => {
                         let usernamesOfFriends = [];
                         for (var x in membersIDList) {
                             console.log(membersIDList[x]);
-                            db.manyOrNone('SELECT username FROM Members WHERE memberid=$1', [membersIDList[x]])
+                            db.manyOrNone('SELECT username FROM Members WHERE memberid=$1', membersIDList[x])
                                 .then(name => {
                                     usernamesOfFriends.push(name);
                                 });
