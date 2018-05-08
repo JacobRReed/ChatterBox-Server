@@ -50,12 +50,12 @@ router.post('/inc', (req, res) => {
 
 //Get all requests sent by the user OUTGOING REQUESTS
 router.post('/out', (req, res) => {
-    let user = req.body['username'];
+    let username = req.body['username'];
     let cancel = req.body['cancel'];
     let friend = req.body['friend'];
     if (!cancel) {
         //Get user id
-        db.one('SELECT memberid FROM Members WHERE username LIKE $1', [user])
+        db.one('SELECT memberid FROM Members WHERE username LIKE $1', [username])
             .then(data => {
                 let memberID = data['memberid'];
                 //Find all NON verified friends
