@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
         .then(data => {
             let memberID = data['memberid'];
             //Find all NON verified friends
-            db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND verified=1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND verified=1', [memberID])
+            db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND verified=0 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND verified=0', [memberID])
                 .then(dataTwo => {
                     //Pull out all member IDS
                     membersIDList = [];
