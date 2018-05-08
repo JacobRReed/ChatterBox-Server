@@ -16,6 +16,7 @@ let getHash = require('../utilities/utils').getHash;
 
 var router = express.Router();
 
+//GET ALL FRIENDS
 router.post('/', (req, res) => {
     let user = req.body['username'];
     //Get user id
@@ -23,7 +24,7 @@ router.post('/', (req, res) => {
         .then(data => {
             let memberID = data['memberid'];
             //Find all NON verified friends
-            db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND verified=0 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND verified=0', [memberID])
+            db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND verified=1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND verified=1', [memberID])
                 .then(dataTwo => {
                     //Pull out all member IDS
                     membersIDList = [];
@@ -46,10 +47,12 @@ router.post('/', (req, res) => {
 
 });
 
+//ADD OR DECLINE END POINT BELOW
+///////////////////////////////////////////
 router.post('/ad', (req, res) => {
     let username = req.body['username'];
     let friend = req.body['friend'];
-    let removeOrAdd = req.body['remove'];
+    let removeOrAdd = req.body['accept'];
     //If removeOrAdd = true, then add user. If false, then decline user (delete from table)
     if (removeOrAdd) {
         //VERIFY FRIEND
