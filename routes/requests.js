@@ -16,8 +16,8 @@ let getHash = require('../utilities/utils').getHash;
 
 var router = express.Router();
 
-//Get all requests not from user
-router.post('/', (req, res) => {
+//Get all requests not from user -INCOMING REQUESTS
+router.post('/inc', (req, res) => {
     let user = req.body['username'];
     //Get user id
     db.one('SELECT memberid FROM Members WHERE username LIKE $1', [user])
@@ -46,6 +46,38 @@ router.post('/', (req, res) => {
         })
 
 });
+
+//Get all requests sent by the user OUTGOING REQUESTS
+router.post('/out', (req, res) => {
+    let user = req.body['username'];
+    //Get user id
+    db.one('SELECT memberid FROM Members WHERE username LIKE $1', [user])
+        .then(data => {
+            let memberID = data['memberid'];
+            //Find all NON verified friends
+            db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND verified=0 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND verified=0 AND sentby=$1', [memberID])
+                .then(dataTwo => {
+                    //Pull out all member IDS
+                    membersIDList = [];
+                    for (i = 0; i < dataTwo.length; i++) {
+                        membersIDList.push(dataTwo[i].memberid_b);
+                    }
+                    //Retrieve usernames of all ids
+                    let usernamesOfFriends = [];
+                    db.manyOrNone('SELECT username FROM Members WHERE memberid = ANY($1)', [membersIDList])
+                        .then(dataThree => {
+                            for (i = 0; i < dataThree.length; i++) {
+                                usernamesOfFriends.push(dataThree[i].username); //All usernames of people not verified as friend yet
+                            }
+                            res.send({
+                                possibleFriends: usernamesOfFriends
+                            });
+                        })
+                })
+        })
+
+});
+
 
 //ADD OR DECLINE END POINT BELOW
 ///////////////////////////////////////////
