@@ -36,6 +36,8 @@ app.use('/friends', friends);
 var invite = require('./routes/invite.js');
 app.use('/invite', invite);
 
+var requests = require('./routes/requests.js');
+app.use('/requests', requests);
 
 /*
  * Return HTML for the / end point.
