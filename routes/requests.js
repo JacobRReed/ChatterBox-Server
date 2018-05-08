@@ -16,7 +16,6 @@ let getHash = require('../utilities/utils').getHash;
 
 var router = express.Router();
 
-//app.get('/users') means accept http 'GET' requests at path '/users'
 router.post('/', (req, res) => {
     let user = req.body['username'];
     //Get user id
@@ -47,4 +46,16 @@ router.post('/', (req, res) => {
 
 });
 
+router.post('/ad', (req, res) => {
+    let username = req.body['username'];
+    let friend = req.body['friend'];
+    let removeOrAdd = req.body['remove'];
+    //If removeOrAdd = true, then add user. If false, then decline user (delete from table)
+    res.send({
+        username: username,
+        friend: friend,
+        removeOrAdd,
+        removeOrAdd
+    });
+});
 module.exports = router;

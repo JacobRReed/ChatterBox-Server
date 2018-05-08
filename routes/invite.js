@@ -30,7 +30,7 @@ router.post('/', (req, res) => {
 
     sgMail.send(msg);
     res.send({
-        result: true
+        result: "true"
     });
 });
 
