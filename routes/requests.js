@@ -51,57 +51,58 @@ router.post('/inc', (req, res) => {
 //Get all requests sent by the user OUTGOING REQUESTS
 router.post('/out', (req, res) => {
     let user = req.body['username'];
-    //Get user id
-    db.one('SELECT memberid FROM Members WHERE username LIKE $1', [user])
-        .then(data => {
-            let memberID = data['memberid'];
-            //Find all NON verified friends
-            db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND (verified=0 AND sentby=$1) UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND (verified=0 AND sentby=$1)', [memberID])
-                .then(dataTwo => {
-                    //Pull out all member IDS
-                    membersIDList = [];
-                    for (i = 0; i < dataTwo.length; i++) {
-                        membersIDList.push(dataTwo[i].memberid_b);
-                    }
-                    //Retrieve usernames of all ids
-                    let usernamesOfFriends = [];
-                    db.manyOrNone('SELECT username FROM Members WHERE memberid = ANY($1)', [membersIDList])
-                        .then(dataThree => {
-                            for (i = 0; i < dataThree.length; i++) {
-                                usernamesOfFriends.push(dataThree[i].username); //All usernames of people not verified as friend yet
-                            }
-                            console.log("Non verified friends from, request sent by user: " + usernamesOfFriends);
-                            res.send({
-                                outgoingFriends: usernamesOfFriends
-                            });
-                        })
-                })
-        })
-
-});
-
-//Cancel an outgoing request
-router.post('/out/cancel', (req, res) => {
-    let user = req.body['username'];
+    let cancel = req.body['cancel'];
     let friend = req.body['friend'];
-    //Get member id of user
-    db.one('SELECT memberid FROM Members WHERE username LIKE $1', [username])
-        .then(data => {
-            console.log("User id:" + data.memberid);
-            //Get friend id
-            db.one('SELECT memberid FROM Members WHERE username LIKE $1', [friend])
-                .then(dataTwo => {
-                    //Delete the row where the userid is the one who sent it, and the friend is in one of the columns
-                    db.result('DELETE FROM Contacts WHERE sentby=$1 AND (memberid_a=$2 OR memberid_b=$2)', [data.memberid, dataTwo.memberid])
-                        .then(result => {
-                            console.log("Friend Request Cancelled");
-                            res.send({
-                                result: "true"
+    if (!cancel) {
+        //Get user id
+        db.one('SELECT memberid FROM Members WHERE username LIKE $1', [user])
+            .then(data => {
+                let memberID = data['memberid'];
+                //Find all NON verified friends
+                db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND (verified=0 AND sentby=$1) UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND (verified=0 AND sentby=$1)', [memberID])
+                    .then(dataTwo => {
+                        //Pull out all member IDS
+                        membersIDList = [];
+                        for (i = 0; i < dataTwo.length; i++) {
+                            membersIDList.push(dataTwo[i].memberid_b);
+                        }
+                        //Retrieve usernames of all ids
+                        let usernamesOfFriends = [];
+                        db.manyOrNone('SELECT username FROM Members WHERE memberid = ANY($1)', [membersIDList])
+                            .then(dataThree => {
+                                for (i = 0; i < dataThree.length; i++) {
+                                    usernamesOfFriends.push(dataThree[i].username); //All usernames of people not verified as friend yet
+                                }
+                                console.log("Non verified friends from, request sent by user: " + usernamesOfFriends);
+                                res.send({
+                                    outgoingFriends: usernamesOfFriends
+                                });
+                            })
+                    })
+            })
+    } else { //CANCEL OUTGOING REQUEST
+        //Get member id of user
+        db.one('SELECT memberid FROM Members WHERE username LIKE $1', [username])
+            .then(data => {
+                console.log("User id:" + data.memberid);
+                //Get friend id
+                db.one('SELECT memberid FROM Members WHERE username LIKE $1', [friend])
+                    .then(dataTwo => {
+                        //Delete the row where the userid is the one who sent it, and the friend is in one of the columns
+                        db.result('DELETE FROM Contacts WHERE sentby=$1 AND (memberid_a=$2 OR memberid_b=$2)', [data.memberid, dataTwo.memberid])
+                            .then(result => {
+                                console.log("Friend Request Cancelled");
+                                res.send({
+                                    result: "true"
+                                });
                             });
-                        });
-                });
-        });
+                    });
+            });
+    }
+
+
 });
+
 
 //ADD OR DECLINE END POINT BELOW
 ///////////////////////////////////////////
