@@ -16,7 +16,7 @@ let getHash = require('../utilities/utils').getHash;
 
 var router = express.Router();
 
-//GET ALL FRIENDS
+//Get all requests not from user
 router.post('/', (req, res) => {
     let user = req.body['username'];
     //Get user id
@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
         .then(data => {
             let memberID = data['memberid'];
             //Find all NON verified friends
-            db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND verified=0 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND verified=0', [memberID])
+            db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND verified=0 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND verified=0 AND sentby<>$1', [memberID])
                 .then(dataTwo => {
                     //Pull out all member IDS
                     membersIDList = [];
