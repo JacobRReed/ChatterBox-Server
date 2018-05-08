@@ -89,7 +89,7 @@ router.post('/out', (req, res) => {
                 db.one('SELECT memberid FROM Members WHERE username LIKE $1', [friend])
                     .then(dataTwo => {
                         //Delete the row where the userid is the one who sent it, and the friend is in one of the columns
-                        db.result('DELETE FROM Contacts WHERE sentby=$1 AND (memberid_a=$2 OR memberid_b=$2)', [data.memberid, dataTwo.memberid])
+                        db.result('DELETE FROM Contacts WHERE (memberid_a=$2 OR memberid_b=$2) AND sentby=$1', [data.memberid, dataTwo.memberid])
                             .then(result => {
                                 console.log("Friend Request Cancelled");
                                 res.send({
