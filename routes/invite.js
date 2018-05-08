@@ -14,29 +14,25 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 router.post('/', (req, res) => {
-        let emailAddr = req.body['emailAddress'];
-        let user = req.body['user'];
-        let subjectLine = user + " sent you an invite to use ChatterBox!";
-        let bodyText = "You have been invited to use a great chat app, ChatterBox!";
-        let htmlText = "<strong>You</strong> have been invited to use a great chat app, <strong>ChatterBox</strong>!";
+    let emailAddr = req.body['emailAddress'];
+    let user = req.body['user'];
+    let subjectLine = user + " sent you an invite to use ChatterBox!";
+    let bodyText = "You have been invited to use a great chat app, ChatterBox!";
+    let htmlText = "<strong>You</strong> have been invited to use a great chat app, <strong>ChatterBox</strong>!";
 
-        const msg = {
-            to: emailAddr,
-            from: 'chatterbox@uw.edu',
-            subject: subjectLine,
-            text: bodyText,
-            html: htmlText,
-        };
+    const msg = {
+        to: emailAddr,
+        from: 'chatterbox@uw.edu',
+        subject: subjectLine,
+        text: bodyText,
+        html: htmlText,
+    };
 
-        sgMail.send(msg);
-        res.send({
-            result: true
-        });
-    })
-    .catch((err) => {
-        res.send({
-            result: false
-        });
+    sgMail.send(msg);
+    res.send({
+        result: true
     });
+});
+
 
 module.exports = router;
