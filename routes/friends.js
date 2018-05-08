@@ -24,28 +24,27 @@ router.post('/', (req, res) => {
     console.log("User to fetch friends for: " + user);
     if (user && !remove && !friend) {
         //Using the 'one' method means that only one row should be returned
+        //Get member id of user
         db.one('SELECT memberid FROM Members WHERE username LIKE $1', [user])
             //If successful, run function passed into .then()
             .then(row => {
                 let memberID = row['memberid'];
-                db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1', [memberID])
+                //Get member ids that correspond to our user, make sure they are verified friends
+                db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND verified=1 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND verified=1', [memberID])
                     .then(row => {
                         //Pull out all member IDS
                         membersIDList = [];
                         for (i = 0; i < row.length; i++) {
                             membersIDList.push(row[i].memberid_b);
                         }
-                        console.log("membersIDList: " + membersIDList);
 
                         //Retrieve usernames of all ids
                         let usernamesOfFriends = [];
                         db.manyOrNone('SELECT username FROM Members WHERE memberid = ANY($1)', [membersIDList])
                             .then(data => {
-                                console.log("Recieved Data Query:" + JSON.stringify(data));
                                 for (i = 0; i < data.length; i++) {
                                     usernamesOfFriends.push(data[i].username);
                                 }
-                                console.log("Result array: " + usernamesOfFriends);
                                 res.send({
                                     friends: usernamesOfFriends
                                 });
@@ -68,7 +67,6 @@ router.post('/', (req, res) => {
                 console.log("User id:" + data.memberid);
                 db.one('SELECT memberid FROM Members WHERE username LIKE $1', [friend])
                     .then(dataTwo => {
-                        console.log("Friend id:" + dataTwo.memberid);
                         db.result('DELETE FROM Contacts WHERE (memberid_a=$1 OR memberid_b=$1) AND (memberid_a=$2 OR memberid_b=$2)', [data.memberid, dataTwo.memberid])
                             .then(result => {
                                 //good to go

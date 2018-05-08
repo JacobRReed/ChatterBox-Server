@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 var router = express.Router();
 
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey("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");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 router.post('/', (req, res) => {
     let emailAddr = req.body['emailAddress'];
