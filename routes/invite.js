@@ -29,4 +29,9 @@ router.post('/', (req, res) => {
     };
 
     sgMail.send(msg);
+    res.send({
+        result: true
+    });
 });
+
+module.exports = router;
