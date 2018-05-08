@@ -36,6 +36,7 @@ router.post('/', (req, res) => {
     .catch((err) => {
         res.send({
             result: false
-        })));
+        });
+    });
 
 module.exports = router;
