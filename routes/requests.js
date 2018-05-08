@@ -38,6 +38,7 @@ router.post('/inc', (req, res) => {
                             for (i = 0; i < dataThree.length; i++) {
                                 usernamesOfFriends.push(dataThree[i].username); //All usernames of people not verified as friend yet
                             }
+                            console.log("Non verified friends from, request sent by nonUser: " + usernamesOfFriends);
                             res.send({
                                 incomingFriends: usernamesOfFriends
                             });
@@ -55,7 +56,7 @@ router.post('/out', (req, res) => {
         .then(data => {
             let memberID = data['memberid'];
             //Find all NON verified friends
-            db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND verified=0 UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND (verified=0 AND sentby=$1)', [memberID])
+            db.manyOrNone('SELECT memberid_b FROM Contacts WHERE memberid_a=$1 AND (verified=0 AND sentby=$1) UNION SELECT memberid_a FROM Contacts WHERE memberid_b=$1 AND (verified=0 AND sentby=$1)', [memberID])
                 .then(dataTwo => {
                     //Pull out all member IDS
                     membersIDList = [];
@@ -69,6 +70,7 @@ router.post('/out', (req, res) => {
                             for (i = 0; i < dataThree.length; i++) {
                                 usernamesOfFriends.push(dataThree[i].username); //All usernames of people not verified as friend yet
                             }
+                            console.log("Non verified friends from, request sent by user: " + usernamesOfFriends);
                             res.send({
                                 outgoingFriends: usernamesOfFriends
                             });
