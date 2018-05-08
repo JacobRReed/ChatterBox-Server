@@ -78,6 +78,28 @@ router.post('/out', (req, res) => {
 
 });
 
+//Cancel an outgoing request
+router.post('/out/cancel', (req, res) => {
+    let user = req.body['username'];
+    let friend = req.body['friend'];
+    //Get member id of user
+    db.one('SELECT memberid FROM Members WHERE username LIKE $1', [username])
+        .then(data => {
+            console.log("User id:" + data.memberid);
+            //Get friend id
+            db.one('SELECT memberid FROM Members WHERE username LIKE $1', [friend])
+                .then(dataTwo => {
+                    //Delete the row where the userid is the one who sent it, and the friend is in one of the columns
+                    db.result('DELETE FROM Contacts WHERE sentby=$1 AND (memberid_a=$2 OR memberid_b=$2)', [data.memberid, dataTwo.memberid])
+                        .then(result => {
+                            console.log("Friend Request Cancelled");
+                            res.send({
+                                result: "true"
+                            });
+                        });
+                });
+        });
+});
 
 //ADD OR DECLINE END POINT BELOW
 ///////////////////////////////////////////
