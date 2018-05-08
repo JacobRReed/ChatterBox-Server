@@ -39,7 +39,7 @@ router.post('/inc', (req, res) => {
                                 usernamesOfFriends.push(dataThree[i].username); //All usernames of people not verified as friend yet
                             }
                             res.send({
-                                possibleFriends: usernamesOfFriends
+                                incomingFriends: usernamesOfFriends
                             });
                         })
                 })
@@ -70,7 +70,7 @@ router.post('/out', (req, res) => {
                                 usernamesOfFriends.push(dataThree[i].username); //All usernames of people not verified as friend yet
                             }
                             res.send({
-                                possibleFriends: usernamesOfFriends
+                                outgoingFriends: usernamesOfFriends
                             });
                         })
                 })
