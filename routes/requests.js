@@ -51,11 +51,52 @@ router.post('/ad', (req, res) => {
     let friend = req.body['friend'];
     let removeOrAdd = req.body['remove'];
     //If removeOrAdd = true, then add user. If false, then decline user (delete from table)
-    res.send({
-        username: username,
-        friend: friend,
-        removeOrAdd,
-        removeOrAdd
-    });
+    if (removeOrAdd) {
+        //VERIFY FRIEND
+        db.one('SELECT memberid FROM Members WHERE username LIKE $1', [username])
+            .then(data => {
+                console.log("User id:" + data.memberid);
+                db.one('SELECT memberid FROM Members WHERE username LIKE $1', [friend])
+                    .then(dataTwo => {
+                        db.result('UPDATE Contacts SET verified=1 WHERE (memberid_a=$1 OR memberid_b=$1) AND (memberid_a=$2 OR memberid_b=$2)', [data.memberid, dataTwo.memberid])
+                            .then(result => {
+                                //Good to go, verified the user
+                                console.log("Verified Friend!");
+                                res.send({
+                                    result: "true"
+                                });
+                            })
+                    })
+
+            })
+            .catch((err) => {
+                res.send({
+                    result: "false"
+                });
+            });
+    } else {
+        //DECLINE FRIEND
+        db.one('SELECT memberid FROM Members WHERE username LIKE $1', [username])
+            .then(data => {
+                console.log("User id:" + data.memberid);
+                db.one('SELECT memberid FROM Members WHERE username LIKE $1', [friend])
+                    .then(dataTwo => {
+                        db.result('DELETE FROM Contacts WHERE (memberid_a=$1 OR memberid_b=$1) AND (memberid_a=$2 OR memberid_b=$2)', [data.memberid, dataTwo.memberid])
+                            .then(result => {
+                                //Good to go, verified the user
+                                console.log("User Declined!");
+                                res.send({
+                                    result: "true"
+                                });
+                            })
+                    })
+
+            })
+            .catch((err) => {
+                res.send({
+                    result: "false"
+                });
+            });
+    }
 });
 module.exports = router;

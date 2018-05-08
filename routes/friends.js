@@ -72,18 +72,18 @@ router.post('/', (req, res) => {
                                 //good to go
                                 console.log("Friend " + friend + " removed from " + user + "'s contacts");
                                 res.send({
-                                    result: true
+                                    result: "true"
                                 });
                             })
                     }).catch((err) => {
                         res.send({
-                            result: false
+                            result: "false"
                         })
                     })
             })
             .catch((err) => {
                 res.send({
-                    result: false
+                    result: "false"
                 })
             });
     }
