@@ -24,31 +24,39 @@ router.post('/', (req, res) => {
     let user = req.body['username'];
     let theirPw = req.body['password'];
     let wasSuccessful = false;
+    let passwordMatch = false;
+    let usernameMatch = false;
     if (user && theirPw) {
         //Using the 'one' method means that only one row should be returned
         db.one('SELECT Password, Salt FROM Members WHERE username=$1', [user])
             //If successful, run function passed into .then()
             .then(row => {
+                let usernameMatch = true;
                 let salt = row['salt'];
                 let ourSaltedHash = row['password']; //Retrieve our copy of the password
                 let theirSaltedHash = getHash(theirPw, salt); //Combined their password with our salt, then hash
-                let wasCorrectPw = ourSaltedHash === theirSaltedHash; //Did our salted hash match their salted hash?
+                let passwordMatch = ourSaltedHash === theirSaltedHash; //Did our salted hash match their salted hash?
+
                 //Send whether they had the correct password or not
                 res.send({
-                    success: wasCorrectPw
+                    username: usernameMatch,
+                    password: passwordMatch
+                    
                 });
             })
             //More than one row shouldn't be found, since table has constraint on it
             .catch((err) => {
                 //If anything happened, it wasn't successful
                 res.send({
-                    success: false,
+                    username: usernameMatch,
+                    password: passwordMatch,
                     message: err
                 });
             });
     } else {
         res.send({
-            success: false,
+            username: false,
+            password: false,
             message: 'missing credentials'
         });
     }
