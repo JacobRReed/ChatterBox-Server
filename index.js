@@ -39,6 +39,12 @@ app.use('/invite', invite);
 var requests = require('./routes/requests.js');
 app.use('/requests', requests);
 
+var requests = require('./routes/chats.js');
+app.use('/chats', requests);
+
+var requests = require('./routes/contacts.js');
+app.use('/contacts', requests);
+
 /*
  * Return HTML for the / end point.
  * This is a nice location to document your web service API
