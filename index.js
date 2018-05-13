@@ -45,6 +45,9 @@ app.use('/chats', requests);
 var requests = require('./routes/contacts.js');
 app.use('/contacts', requests);
 
+var search = require('./routes/search.js');
+app.use('/search', search);
+
 /*
  * Return HTML for the / end point.
  * This is a nice location to document your web service API
@@ -52,14 +55,9 @@ app.use('/contacts', requests);
  * Look up the node module 'fs' ex: require('fs');
  */
 app.get("/", (req, res) => {
-    res.writeHead(200, {
-        'Content-Type': 'text/html'
-    });
-    for (i = 1; i < 7; i++) {
-        //write a response to the client
-        res.write('<h' + i + ' style="color:blue">Hello World!</h' + i + '>');
-    }
-    res.end(); //end the response
+    var fs = require('fs');
+    var html = fs.readFileSync('./home.html', 'utf8');
+    res.send(html);
 });
 
 /*
