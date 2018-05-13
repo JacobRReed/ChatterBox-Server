@@ -59,6 +59,7 @@ router.post('/', (req, res) => {
 router.post('/ad', (req, res) => {
     let username = req.body['username'];
     let friendToAdd = req.body['friendToAdd'];
+    console.log("Adding " + friendToAdd + " to " + username + "'s friends");
     //Get member id of username
     db.one('SELECT memberid FROM MEMBERS WHERE username=$1', [username])
         .then(result => {
