@@ -39,11 +39,11 @@ app.use('/invite', invite);
 var requests = require('./routes/requests.js');
 app.use('/requests', requests);
 
-var requests = require('./routes/chats.js');
-app.use('/chats', requests);
+var chats = require('./routes/chats.js');
+app.use('/chats', chats);
 
-var requests = require('./routes/contacts.js');
-app.use('/contacts', requests);
+var contacts = require('./routes/contacts.js');
+app.use('/contacts', contacts);
 
 var search = require('./routes/search.js');
 app.use('/search', search);
