@@ -16,6 +16,7 @@ let getHash = require('../utilities/utils').getHash;
 
 var router = express.Router();
 
+//Gets results based on options for search
 router.post('/', (req, res) => {
     let option = req.body['option'];
     //Option 1 = email, option 2 = username, option 3 = first and last
@@ -52,6 +53,33 @@ router.post('/', (req, res) => {
             });
     }
 
+});
+
+//Handles sending request upon seach add
+router.post('/ad', (req, res) => {
+    let username = req.body['username'];
+    let friendToAdd = req.body['friendToAdd'];
+    //Get member id of username
+    db.one('SELECT memberid FROM MEMBERS WHERE username=$1', [username])
+        .then(result => {
+            let userID = result.memberid;
+            //Get friendToAdd id
+            db.one('SELECT memberid FROM MEMBERS WHERE username=$1', [friendToAdd])
+                .then(resultTwo => {
+                    let friendToAddID = resultTwo.memberid;
+                    db.result('INSERT INTO Contacts(memberid_a,memberid_b,sentby) VALUES ($1,$2,$1)', [username, friendToAdd])
+                        .then(resultFinal => {
+                            res.send({
+                                success: true
+                            });
+                        });
+                })
+                .catch((err) => {
+                    res.send({
+                        success: false
+                    });
+                });
+        });
 });
 
 module.exports = router;
