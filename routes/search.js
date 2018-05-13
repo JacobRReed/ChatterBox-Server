@@ -68,7 +68,7 @@ router.post('/ad', (req, res) => {
             db.one('SELECT memberid FROM MEMBERS WHERE username=$1', [friendToAdd])
                 .then(resultTwo => {
                     let friendToAddID = resultTwo.memberid;
-                    db.result('INSERT INTO Contacts(memberid_a,memberid_b,sentby) VALUES ($1,$2,$1)', [username, friendToAdd])
+                    db.result('INSERT INTO Contacts(memberid_a,memberid_b,sentby) VALUES ($1,$2,$1)', [userID, friendToAddID])
                         .then(resultFinal => {
                             res.send({
                                 success: true
