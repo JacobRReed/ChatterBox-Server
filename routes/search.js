@@ -22,7 +22,7 @@ router.post('/', (req, res) => {
     if (option === 1) {
         let email = req.body['email'];
         console.log("Searching for email: " + email);
-        db.manyOrNone('SELECT username FROM MEMBERS WHERE email LIKE \'%$1#%\'', [email])
+        db.manyOrNone('SELECT username FROM MEMBERS WHERE LOWER(email) LIKE \'%$1#%\'', [email])
             .then(result => {
                 console.log("Found: " + result);
                 res.send({
@@ -32,7 +32,7 @@ router.post('/', (req, res) => {
     } else if (option === 2) {
         let username = req.body['username'];
         console.log("Searching for username: " + username);
-        db.manyOrNone('SELECT username FROM MEMBERS WHERE username LIKE \'%$1#%\'', [username])
+        db.manyOrNone('SELECT username FROM MEMBERS WHERE LOWER(username) LIKE \'%$1#%\'', [username])
             .then(result => {
                 console.log("Found: " + result);
                 res.send({
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
         let firstName = req.body['firstName'];
         let lastName = req.body['lastName'];
         console.log("Searching for first name: " + firstName + ", last name: " + lastName);
-        db.manyOrNone('SELECT username FROM MEMBERS WHERE firstname LIKE \'%$1#%\' AND lastname LIKE \'%$2#%\'', [firstName, lastName])
+        db.manyOrNone('SELECT username FROM MEMBERS WHERE LOWER(firstname) LIKE \'%$1#%\' AND LOWER(lastname) LIKE \'%$2#%\'', [firstName, lastName])
             .then(result => {
                 console.log("Found: " + result);
                 res.send({
