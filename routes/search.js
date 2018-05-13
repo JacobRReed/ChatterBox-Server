@@ -32,10 +32,24 @@ router.post('/', (req, res) => {
     } else if (option === 2) {
         let username = req.body['username'];
         console.log("Searching for username: " + username);
+        db.manyOrNone('SELECT memberid,firstname,lastname, username,email FROM MEMBERS WHERE username LIKE $1', [username])
+            .then(result => {
+                console.log("Found: " + result);
+                res.send({
+                    matches: result
+                });
+            });
     } else if (option === 3) {
         let firstName = req.body['firstName'];
         let lastName = req.body['lastName'];
         console.log("Searching for first name: " + firstName + ", last name: " + lastName);
+        db.manyOrNone('SELECT memberid,firstname,lastname, username,email FROM MEMBERS WHERE firstname LIKE $1 AND lastname LIKE $2', [firstName, lastName])
+            .then(result => {
+                console.log("Found: " + result);
+                res.send({
+                    matches: result
+                });
+            });
     }
 
 });
