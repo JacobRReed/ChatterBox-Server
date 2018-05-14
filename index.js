@@ -48,6 +48,9 @@ app.use('/contacts', contacts);
 var search = require('./routes/search.js');
 app.use('/search', search);
 
+var resetpassword = require('./routes/resetpassword.js');
+app.use('/resetpassword', resetpassword);
+
 /*
  * Return HTML for the / end point.
  * This is a nice location to document your web service API
