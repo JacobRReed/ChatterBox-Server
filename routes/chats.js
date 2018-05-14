@@ -6,6 +6,7 @@ const app = express();
 let db = require('../utilities/utils').db;
 
 var router = express.Router();
+// done
 router.post("/makeChat", (req, res) => {
   let name = req.body['name'];
   // let message = req.body['message'];
@@ -31,18 +32,15 @@ router.post("/makeChat", (req, res) => {
   });
 });
 
-router.get("/getChat", (req, res) => {
-  let name = req.query['name']
+//done
+router.post("/getChat", (req, res) => {
+  let name = req.body['name']
   let query = `SELECT chatID FROM CHATS WHERE NAME = $1`
-  // let query = `SELECT Distinct(Chats.Name)
-  //   FROM Chats, Messages
-  //   INNER JOIN Members ON Messages.MemberId=Members.MemberId
-  //   WHERE Chats.ChatId=Messages.ChatId
-  //   ORDER BY Chats.Name ASC`
-  db.manyOrNone(query, [name])
-  .then((rows) => {
+  db.one(query, [name])
+  .then((row) => {
+    // let chatId = row['chatID']
     res.send({
-      messages: rows
+      name: row
     })
   }).catch((err) => {
     res.send({
@@ -52,20 +50,34 @@ router.get("/getChat", (req, res) => {
   });
 });
 
+// done
+var router = express.Router();
+router.post("/addFriendToChat", (req, res) => {
+  let chatid = req.body['chatid'];
+  let memid = req.body['memid'];
+  db.none('INSERT INTO CHATMEMBERS(CHATID, MEMBERID) VALUES(' + chatid + ', ' + memid + ')')
+    .then(() => {
+      res.send({
+        success: true
+      });
+    }).catch((err) => {
+      res.send({
+        success: false,
+        error: "the thing you typed in were: " + chatid + " and " + memid,
+    });
+  });
+});
 
-router.post("/getChat", (req, res) => {
-  let name = req.query['name']
-  let query = `SELECT chatID FROM CHATS WHERE NAME = $1`
-  // let query = `SELECT Distinct(Chats.Name)
-  //   FROM Chats, Messages
-  //   INNER JOIN Members ON Messages.MemberId=Members.MemberId
-  //   WHERE Chats.ChatId=Messages.ChatId
-  //   ORDER BY Chats.Name ASC`
+
+//done
+router.post("/getMemberID", (req, res) => {
+  let name = req.body['name']
+  let query = `SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($1)`
   db.one(query, [name])
   .then((row) => {
-    let chatId = row['chatID']
+    // let chatId = row['chatID']
     res.send({
-      name: chatId
+      name: row
     })
   }).catch((err) => {
     res.send({
