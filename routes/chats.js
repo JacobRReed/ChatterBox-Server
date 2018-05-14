@@ -32,24 +32,6 @@ router.post("/makeChat", (req, res) => {
   });
 });
 
-//done
-router.post("/getChat", (req, res) => {
-  let name = req.body['name']
-  let query = `SELECT chatID FROM CHATS WHERE NAME = $1`
-  db.one(query, [name])
-  .then((row) => {
-    // let chatId = row['chatID']
-    res.send({
-      name: row
-    })
-  }).catch((err) => {
-    res.send({
-      success: false,
-      error: err
-    })
-  });
-});
-
 // done
 var router = express.Router();
 router.post("/addFriendToChat", (req, res) => {
@@ -83,6 +65,23 @@ router.post("/getMemberID", (req, res) => {
     res.send({
       success: false,
       error: err
+    })
+  });
+});
+
+router.post("/getChat", (req, res) => {
+  let name = req.body['name']
+  let query = `SELECT CHATID FROM CHATS WHERE LOWER(NAME) = LOWER($1)`
+  db.one(query, [name])
+  .then((row) => {
+    // let chatId = row['chatID']
+    res.send({
+      name: row
+    })
+  }).catch((err) => {
+    res.send({
+      success: false,
+      error: "THE NAME IS: " + name
     })
   });
 });
