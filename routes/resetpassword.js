@@ -44,7 +44,7 @@ router.post('/', (req, res) => {
     let usernameMatch = false;
     db.one('SELECT Password, Salt FROM Members WHERE username=$1', [username])
     .then(() => {
-        db.one("UPDATE MEMBERS SET (Password, Salt) VALUES ($2, $3) WHERE username=$1", params)
+        db.one('UPDATE MEMBERS SET (Password, Salt) VALUES ($2, $3) WHERE username=$1', params)
         .then(() => { 
             //We successfully added the new password, let the user know
             res.send({
