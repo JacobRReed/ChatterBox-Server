@@ -55,7 +55,7 @@ router.post("/addFriendToChat", (req, res) => {
 router.post("/getMemberID", (req, res) => {
   let name = req.body['name']
   let query = `SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($1)`
-  db.one(query, [name])
+  db.one(`SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER(` + name + `)`)
   .then((row) => {
     // let chatId = row['chatID']
     res.send({
