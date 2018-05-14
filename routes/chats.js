@@ -53,7 +53,7 @@ router.get("/getChat", (req, res) => {
 });
 
 
-router.get("/getChat", (req, res) => {
+router.post("/getChat", (req, res) => {
   let name = req.query['name']
   let query = `SELECT chatID FROM CHATS WHERE NAME = $1`
   // let query = `SELECT Distinct(Chats.Name)
