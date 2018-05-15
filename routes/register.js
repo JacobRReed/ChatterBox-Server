@@ -50,7 +50,7 @@ router.post('/', (req, res) => {
         let emailAddr = email;
         let subjectLine = " You have registered with Chatterbox!";
         let bodyText = "You have registered for a great chat app, ChatterBox!";
-        let htmlText = "<strong>You</strong> have registered for a great chat app, <strong>ChatterBox</strong>!";
+        let htmlText = "<strong>You</strong> have registered for a great chat app, <strong>ChatterBox</strong>!\n please click on this link to validate your account: http://image-cdn.neatoshop.com/styleimg/51794/none/iceblue/default/328055-19;1478138773i.jpg";
 
          const msg = {
             to: emailAddr,
