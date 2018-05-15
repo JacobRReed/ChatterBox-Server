@@ -40,11 +40,12 @@ router.post('/', (req, res) => {
     //We're using placeholders ($1, $2, $3) in the SQL query string to avoid SQL Injection
     //If you want to read more: https://stackoverflow.com/a/8265319
     let params = [username, email];
+    let passwordparams = [username, salted_hash, salt];
     let emailMatch = false;
     let usernameMatch = false;
     db.one('SELECT username, email FROM Members WHERE username=$1 AND email=$2', params)
     .then(() => {
-        db.one('UPDATE MEMBERS SET Password=$2, Salt=$3 WHERE username=$1', params)
+        db.one('UPDATE MEMBERS SET Password=$2, Salt=$3 WHERE username=$1', passwordparams)
         // UPDATE MEMBERS SET password = 'gg', salt = 'ggez' WHERE username = 'thomas5862';
         .then(() => { 
             //We successfully added the new password, let the user know
