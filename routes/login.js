@@ -21,8 +21,10 @@ var router = express.Router();
 
 //app.get('/users') means accept http 'GET' requests at path '/users'
 router.post('/', (req, res) => {
+    
     let user = req.body['username'];
     let theirPw = req.body['password'];
+    let params = [user, '1'];
     let wasSuccessful = false;
     let passwordMatch = false;
     let usernameMatch = false;
@@ -39,7 +41,7 @@ router.post('/', (req, res) => {
                 let passwordMatch = ourSaltedHash === theirSaltedHash; //Did our salted hash match their salted hash?
                 
                 // select statement to check for verificaton
-                db.one('SELECT Password, Salt FROM Members WHERE verification=1 AND username=$1', [user])
+                db.one('SELECT username FROM Members WHERE username=$1 AND verification=$2', params)
                     .then(row => {
                         verification = true;
                         res.send({
