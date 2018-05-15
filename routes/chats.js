@@ -77,19 +77,19 @@ router.post("/getChat", (req, res) => {
     // let chatId = row['chatID']
     res.send({
       name: row
-    })
+    });
   }).catch((err) => {
     res.send({
       success: false,
       error: "THE NAME IS: " + name
-    })
+    });
   });
 });
 
 
 //---------------
 
-var router = express.Router();
+// var router = express.Router();
 router.post("/MakeAndAddToChat", (req, res) => {
   let chatname = req.body['chatname'];
   let username = req.body['username'];
