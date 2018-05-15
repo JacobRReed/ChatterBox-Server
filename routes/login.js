@@ -57,7 +57,8 @@ router.post('/', (req, res) => {
                             username: usernameMatch,
                             password: passwordMatch,
                             verification: verification,
-                            message: err
+                            message: err,
+                            error: 'error1: ' + username + ' and ' + email + ' and ' + verification
                         });
                     });
                 //Send whether they had the correct password or not
