@@ -17,7 +17,7 @@ let db = require('../utilities/utils').db;
 
 let getHash = require('../utilities/utils').getHash;
 
-let sendEmail = require('../routes/validateregistration').post;
+let sendEmail = require('../routes/validateregistration');
 
 var router = express.Router();
 
