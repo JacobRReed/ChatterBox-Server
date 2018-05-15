@@ -53,7 +53,23 @@ router.post('/', (req, res) => {
                 username: true,
                 email: true
             });
-            sendEmail("cfb3@uw.edu", email, "Password Reset.", "<strong>Your Password was just reset.</strong>");
+            const sgMail = require('@sendgrid/mail');
+            sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+
+            let emailAddr = email;
+            let subjectLine = " Chatterbox Password Changed!";
+            let bodyText = "You have recently changed your password on Chatterbox.";
+            let htmlText = "<strong>You</strong> have recently changed your password on <strong>ChatterBox</strong>.";
+
+            const msg = {
+                to: emailAddr,
+                from: 'chatterbox@uw.edu',
+                subject: subjectLine,
+                text: bodyText,
+                html: htmlText,
+            };
+            sgMail.send(msg);
         }).catch((err) => {
             //log the error
             console.log(err);
