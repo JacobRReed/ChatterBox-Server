@@ -58,7 +58,8 @@ router.post('/', (req, res) => {
             console.log(err);
             res.send({
                 username: false,
-                email: emailMatch
+                email: emailMatch,
+                error: 'error1: ' + username + ' and ' + email
             });
         });  
     }).catch((err) => {
