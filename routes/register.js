@@ -92,6 +92,12 @@ router.get("/validateusername", (req, res) => {
     success: true
   });
      
+  }).catch((err) => {
+    //log the error
+    console.log(err);
+    res.send({
+        success: false
+    });
   });
 });
 
