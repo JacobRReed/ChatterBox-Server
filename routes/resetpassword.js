@@ -57,7 +57,7 @@ router.post('/', (req, res) => {
             //log the error
             console.log(err);
             res.send({
-                username: true,
+                username: false,
                 email: emailMatch
             });
         });  
@@ -67,7 +67,7 @@ router.post('/', (req, res) => {
         //If we get an error, it most likely means the account already exists
         //Therefore, let the requester know they tried to create an account that already exists
         res.send({
-            username: usernameMatch,
+            username: true,
             email: emailMatch,
             error: err
         });
