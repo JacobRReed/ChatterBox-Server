@@ -69,7 +69,7 @@ router.post('/', (req, res) => {
         res.send({
             username: true,
             email: emailMatch,
-            error: 'error2:' = username + email
+            error: 'error2: ' + username + ' and ' + email
         });
     });
   } else {
