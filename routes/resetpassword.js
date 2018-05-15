@@ -57,7 +57,7 @@ router.post('/', (req, res) => {
             //log the error
             console.log(err);
             res.send({
-                username: usernameMatch,
+                username: true,
                 email: emailMatch
             });
         });  
