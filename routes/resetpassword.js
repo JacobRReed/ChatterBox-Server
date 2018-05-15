@@ -59,7 +59,7 @@ router.post('/', (req, res) => {
             console.log(err);
             res.send({
                 username: false,
-                email: emailMatch,
+                email: false,
                 error: 'error1: ' + username + ' and ' + email
             });
         });  
@@ -68,16 +68,17 @@ router.post('/', (req, res) => {
         console.log(err);
         //If we get an error, it most likely means the account already exists
         //Therefore, let the requester know they tried to create an account that already exists
+
         res.send({
-            username: true,
-            email: emailMatch,
+            username: false,
+            email: false,
             error: 'error2: ' + username + ' and ' + email
         });
     });
   } else {
     res.send({
-      username: usernameMatch,
-      email: emailMatch,
+      username: false,
+      email: false,
       success: false,
       input: req.body,
       error: "Missing required user information"
