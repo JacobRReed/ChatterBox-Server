@@ -123,6 +123,26 @@ router.post("/MakeAndAddToChat", (req, res) => {
   });
 });
 
+//-----
+
+router.post("/getAllChats", (req, res) => {
+  let name = req.body['name']
+  let usernamesOfChats = [];
+  db.manyOrNone('SELECT CHATS.NAME FROM CHATS, CHATMEMBERS WHERE CHATS.CHATID = CHATMEMBERS.CHATID AND MEMBERID = (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($1))', [name])
+  .then((data) => {
+    for (i = 0; i < data.length; i++) {
+        usernamesOfChats.push(data[i].name);
+    }
+    res.send({
+      name: usernamesOfChats
+    });
+  }).catch((err) => {
+    res.send({
+      success: false,
+      error: "THE NAME IS: " + name
+    });
+  });
+});
 
 
 module.exports = router;
