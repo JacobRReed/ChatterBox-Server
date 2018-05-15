@@ -17,7 +17,7 @@ let db = require('../utilities/utils').db;
 
 let getHash = require('../utilities/utils').getHash;
 
-let sendEmail = require('../utilities/utils').sendEmail;
+let sendEmail = require('../routes/validateregistration').post;
 
 var router = express.Router();
 
@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
       res.send({
         success: true
       });
-      sendEmail("cfb3@uw.edu", email, "Welcome!", "<strong>Welcome to our app! Here is your registration key: 1234</strong>");
+      sendEmail(email);
     }).catch((err) => {
       //log the error
       console.log(err);
