@@ -85,7 +85,7 @@ router.post('/', (req, res) => {
 });
 
 router.get("/validateusername", (req, res) => {
-  let name = req.body['name'];
+  let name = req.query['name'];
   console.log("the username is: " + name);
   db.none('UPDATE MEMBERS SET verification=\'1\' WHERE username=$1', [name])
   .then(() => {
