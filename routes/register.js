@@ -17,7 +17,6 @@ let db = require('../utilities/utils').db;
 
 let getHash = require('../utilities/utils').getHash;
 
-let sendEmail = require('../routes/validateregistration');
 
 var router = express.Router();
 
@@ -44,11 +43,28 @@ router.post('/', (req, res) => {
     let params = [first, last, username, email, salted_hash, salt];
     db.none("INSERT INTO MEMBERS(FirstName, LastName, Username, Email, Password, Salt) VALUES ($1, $2, $3, $4, $5, $6)", params)
     .then(() => {
-      //We successfully added the user, let the user know
-      res.send({
-        success: true
-      });
-      sendEmail(email);
+      const sgMail = require('@sendgrid/mail');
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+
+        let emailAddr = email;
+        let subjectLine = " You have registered with Chatterbox!";
+        let bodyText = "You have registered for a great chat app, ChatterBox!";
+        let htmlText = "<strong>You</strong> have registered for a great chat app, <strong>ChatterBox</strong>!";
+
+         const msg = {
+            to: emailAddr,
+            from: 'chatterbox@uw.edu',
+            subject: subjectLine,
+            text: bodyText,
+            html: htmlText,
+          };
+
+          sgMail.send(msg);
+          res.send({
+            result: "true"
+          });
+
     }).catch((err) => {
       //log the error
       console.log(err);
