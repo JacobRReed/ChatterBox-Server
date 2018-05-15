@@ -86,11 +86,12 @@ router.post('/', (req, res) => {
 
 router.get("/validateusername", (req, res) => {
   let name = req.body['name'];
+  console.log("the username is: " + name);
   db.none('UPDATE MEMBERS SET verification=\'1\' WHERE username=$1', [name])
   .then(() => {
-  res.send({
-    success: true
-  });
+    res.send({
+      success: true
+    });
      
   }).catch((err) => {
     //log the error
