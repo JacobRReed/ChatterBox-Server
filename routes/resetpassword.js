@@ -49,10 +49,7 @@ router.post('/', (req, res) => {
         // UPDATE MEMBERS SET password = 'gg', salt = 'ggez' WHERE username = 'thomas5862';
         .then(() => { 
             //We successfully added the new password, let the user know
-            res.send({
-                username: true,
-                email: true
-            });
+            
             const sgMail = require('@sendgrid/mail');
             sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -70,6 +67,10 @@ router.post('/', (req, res) => {
                 html: htmlText,
             };
             sgMail.send(msg);
+            res.send({
+                username: true,
+                email: true
+            });
         }).catch((err) => {
             //log the error
             console.log(err);
