@@ -42,7 +42,7 @@ router.post('/', (req, res) => {
     let params = [username, email];
     let emailMatch = false;
     let usernameMatch = false;
-    db.one('SELECT username, email FROM Members WHERE username=$1 AND email=$2', [username])
+    db.one('SELECT username, email FROM Members WHERE username=$1 AND email=$2', params)
     .then(() => {
         db.one('UPDATE MEMBERS SET Password=$2, Salt=$3 WHERE username=$1', params)
         // UPDATE MEMBERS SET password = 'gg', salt = 'ggez' WHERE username = 'thomas5862';
