@@ -50,7 +50,7 @@ router.post('/', (req, res) => {
         let emailAddr = email;
         let subjectLine = " You have registered with Chatterbox!";
         let bodyText = "You have registered for a great chat app, ChatterBox!";
-        let htmlText = "<strong>You</strong> have registered for a great chat app, <strong>ChatterBox</strong>!\n please click on this link to validate your account: <a herf=\"chatterboxtcss450.herokuapp.com/register/validateusername?name=" + username + ">link</a>";
+        let htmlText = "<strong>You</strong> have registered for a great chat app, <strong>ChatterBox</strong>!\n please click on this link to validate your account: <a herf=\"chatterboxtcss450.herokuapp.com/register/validateusername?name=" + username + "\">link</a>";
 
          const msg = {
             to: emailAddr,
