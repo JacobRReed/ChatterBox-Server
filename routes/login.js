@@ -26,6 +26,7 @@ router.post('/', (req, res) => {
     let wasSuccessful = false;
     let passwordMatch = false;
     let usernameMatch = false;
+    let verification = false;
     if (user && theirPw) {
         //Using the 'one' method means that only one row should be returned
         db.one('SELECT Password, Salt FROM Members WHERE username=$1', [user])
@@ -36,11 +37,32 @@ router.post('/', (req, res) => {
                 let ourSaltedHash = row['password']; //Retrieve our copy of the password
                 let theirSaltedHash = getHash(theirPw, salt); //Combined their password with our salt, then hash
                 let passwordMatch = ourSaltedHash === theirSaltedHash; //Did our salted hash match their salted hash?
+                
+                // select statement to check for verificaton
+                db.one('SELECT Password, Salt FROM Members WHERE verification=1 AND username=$1', [user])
+                    .then(row => {
+                        verification = true;
+                        res.send({
+                            username: usernameMatch,
+                            password: passwordMatch,
+                            verification: verification
+                        });
 
+
+                    }).catch((err) => {
+                        //If anything happened, it wasn't successful
+                        res.send({
+                            username: usernameMatch,
+                            password: passwordMatch,
+                            verification: verification,
+                            message: err
+                        });
+                    });
                 //Send whether they had the correct password or not
                 res.send({
                     username: usernameMatch,
-                    password: passwordMatch
+                    password: passwordMatch,
+                    verification: verification
                     
                 });
             })
@@ -50,6 +72,7 @@ router.post('/', (req, res) => {
                 res.send({
                     username: usernameMatch,
                     password: passwordMatch,
+                    verification: verification,
                     message: err
                 });
             });
@@ -57,6 +80,7 @@ router.post('/', (req, res) => {
         res.send({
             username: false,
             password: false,
+            verification: false,
             message: 'missing credentials'
         });
     }
