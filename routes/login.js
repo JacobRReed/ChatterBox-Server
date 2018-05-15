@@ -65,7 +65,8 @@ router.post('/', (req, res) => {
                 res.send({
                     username: usernameMatch,
                     password: passwordMatch,
-                    verification: verification
+                    verification: verification,
+                    error: 'error2: ' + username + ' and ' + email + ' and ' + verification
                     
                 });
             })
@@ -76,7 +77,7 @@ router.post('/', (req, res) => {
                     username: usernameMatch,
                     password: passwordMatch,
                     verification: verification,
-                    message: err
+                    error: 'error3: ' + username + ' and ' + email + ' and ' + verification
                 });
             });
     } else {
