@@ -86,7 +86,7 @@ router.post('/', (req, res) => {
 
 router.get("/validateusername", (req, res) => {
   let name = req.body['name'];
-  db.none('UPDATE MEMBERS SET verification=1 WHERE username=$1', [name])
+  db.none('UPDATE MEMBERS SET verification=\'1\' WHERE username=$1', [name])
   .then(() => {
   res.send({
     success: true
