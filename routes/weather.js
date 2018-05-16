@@ -11,8 +11,8 @@ app.use(bodyParser.json());
 var router = express.Router();
 
 //AccuWeather API key
-//const weatherKey = process.env.WEATHER_KEY;
-const weatherKey = "QEceomVSxVD94ogNL8rkqjo3Uox9kzYr";
+const weatherKey = process.env.WEATHER_KEY;
+
 
 //Location vars
 var latLon = "40.8,-77.8"; //Lat/lon
