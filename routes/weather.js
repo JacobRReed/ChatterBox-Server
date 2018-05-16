@@ -150,19 +150,20 @@ router.post('/', (req, res) => {
                         nightPhrase: dataFive[i].Night.IconPhrase
                     };
                 }
+                res.send({
+                    success: true,
+                    currentConditions: {
+                        temp: ccTemp,
+                        icon: ccIcon,
+                        text: ccWeatherText
+                    },
+                    hourlyData: hourlyData,
+                    fiveDayData: fiveDayData
+                });
             }).catch(err => console.log(err));
         }).catch(err => console.log(err));
     }).catch(err => console.log('Got error ', err));
-    res.send({
-        success: true,
-        currentConditions: {
-            temp: ccTemp,
-            icon: ccIcon,
-            text: ccWeatherText
-        },
-        hourlyData: hourlyData,
-        fiveDayData: fiveDayData
-    });
+
 });
 
 
