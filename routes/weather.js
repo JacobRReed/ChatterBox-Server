@@ -159,13 +159,12 @@ router.post('/', (req, res) => {
                         icon: ccIcon,
                         text: ccWeatherText
                     },
-                    hourlyData: hourlyData,
+                    hourlyData: hourlyData[0],
                     fiveDayData: fiveDayData
                 });
             }).catch(err => console.log(err));
         }).catch(err => console.log(err));
     }).catch(err => console.log('Got error ', err));
-
 });
 
 
