@@ -20,10 +20,9 @@
     "express": "^4.16.3",
     "form-data": "^2.3.2",
     "mysql": "^2.15.0",
-    "node-accuweather": "^1.7.0",
     "npm": "^5.10.0",
     "pg": "^7.4.1",
-    "pg-promise": "^8.1.1"
+    "pg-promise": "^8.1.1",
   },
   "devDependencies": {
     "install": "^0.11.0",
