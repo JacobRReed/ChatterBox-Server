@@ -26,92 +26,93 @@ var ccURL = "test"; //URL for get
 var hourlyData = [];
 var fiveDayData = [];
 
+//Get city code
+const httpGet = url => {
+    return new Promise((resolve, reject) => {
+        http.get(url, res => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => {
+                try {
+                    body = JSON.parse(body);
+                } catch (err) {
+                    reject(new Error(err));
+                }
+                resolve({
+                    code: body.Key,
+                    name: body.EnglishName
+                });
+            });
+        }).on('error', reject);
+    });
+};
+
+//Current Conditions
+const ccGet = url => {
+    return new Promise((resolve, reject) => {
+        http.get(url, res => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => {
+                try {
+                    body = JSON.parse(body);
+                } catch (err) {
+                    reject(new Error(err));
+                }
+                resolve({
+                    text: body[0].WeatherText,
+                    temp: body[0].Temperature.Imperial.Value,
+                    icon: body[0].WeatherIcon
+                });
+            });
+        }).on('error', reject);
+    });
+};
+
+//12 hour
+const twelveGet = url => {
+    return new Promise((resolve, reject) => {
+        http.get(url, res => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => {
+                try {
+                    body = JSON.parse(body);
+                } catch (err) {
+                    reject(new Error(err));
+                }
+                resolve({
+                    body: body
+                });
+            });
+        }).on('error', reject);
+    });
+};
+
+//5 day
+const fiveGet = url => {
+    return new Promise((resolve, reject) => {
+        http.get(url, res => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => {
+                try {
+                    body = JSON.parse(body);
+                } catch (err) {
+                    reject(new Error(err));
+                }
+                resolve({
+                    body: body
+                });
+            });
+        }).on('error', reject);
+    });
+};
+
 router.post('/', (req, res) => {
     let lat = req.body['lat'];
     let lon = req.body['lon'];
     var latLongCityCodeURL = ("http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=" + weatherKey + "&q=" + lat + "," + lon);
-    //Get city code
-    const httpGet = url => {
-        return new Promise((resolve, reject) => {
-            http.get(url, res => {
-                let body = '';
-                res.on('data', chunk => body += chunk);
-                res.on('end', () => {
-                    try {
-                        body = JSON.parse(body);
-                    } catch (err) {
-                        reject(new Error(err));
-                    }
-                    resolve({
-                        code: body.Key,
-                        name: body.EnglishName
-                    });
-                });
-            }).on('error', reject);
-        });
-    };
-
-    //Current Conditions
-    const ccGet = url => {
-        return new Promise((resolve, reject) => {
-            http.get(url, res => {
-                let body = '';
-                res.on('data', chunk => body += chunk);
-                res.on('end', () => {
-                    try {
-                        body = JSON.parse(body);
-                    } catch (err) {
-                        reject(new Error(err));
-                    }
-                    resolve({
-                        text: body[0].WeatherText,
-                        temp: body[0].Temperature.Imperial.Value,
-                        icon: body[0].WeatherIcon
-                    });
-                });
-            }).on('error', reject);
-        });
-    };
-
-    //12 hour
-    const twelveGet = url => {
-        return new Promise((resolve, reject) => {
-            http.get(url, res => {
-                let body = '';
-                res.on('data', chunk => body += chunk);
-                res.on('end', () => {
-                    try {
-                        body = JSON.parse(body);
-                    } catch (err) {
-                        reject(new Error(err));
-                    }
-                    resolve({
-                        body: body
-                    });
-                });
-            }).on('error', reject);
-        });
-    };
-
-    //5 day
-    const fiveGet = url => {
-        return new Promise((resolve, reject) => {
-            http.get(url, res => {
-                let body = '';
-                res.on('data', chunk => body += chunk);
-                res.on('end', () => {
-                    try {
-                        body = JSON.parse(body);
-                    } catch (err) {
-                        reject(new Error(err));
-                    }
-                    resolve({
-                        body: body
-                    });
-                });
-            }).on('error', reject);
-        });
-    };
 
     //Get city code from lat lon
     httpGet(latLongCityCodeURL).then(data => {
