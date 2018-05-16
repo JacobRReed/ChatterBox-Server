@@ -16,13 +16,14 @@
   "dependencies": {
     "@sendgrid/mail": "^6.2.1",
     "accuweather": "^1.0.1",
+    "async": "^2.6.0",
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "form-data": "^2.3.2",
     "mysql": "^2.15.0",
     "npm": "^5.10.0",
     "pg": "^7.4.1",
-    "pg-promise": "^8.1.1",
+    "pg-promise": "^8.1.1"
   },
   "devDependencies": {
     "install": "^0.11.0",
