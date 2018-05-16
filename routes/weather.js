@@ -13,8 +13,10 @@ var router = express.Router();
 const AccuWeather = require('accuweather');
 const weather = new AccuWeather(process.env.WEATHER_KEY);
 
-weather.localkey(28580).details(true).get().then(res => {
-    console.log(res);
-}).catch(err => {
-    console.log(err);
+router.post('/', (req, res) => {
+    weather.localkey(28580).details(true).get().then(res => {
+        console.log(res);
+    }).catch(err => {
+        console.log(err);
+    });
 });
