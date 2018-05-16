@@ -136,6 +136,7 @@ router.post('/', (req, res) => {
                         icon: dataTwelve[i].WeatherIcon
                     };
                 }
+                console.log(hourlyData);
             }).catch(err => console.log(err));
             fiveGet(fiveURL).then(dataFive => {
                 //Generate five day data
@@ -149,6 +150,7 @@ router.post('/', (req, res) => {
                         dayPhrase: dataFive[i].Day.IconPhrase,
                         nightPhrase: dataFive[i].Night.IconPhrase
                     };
+                    console.log(fiveDayData);
                 }
                 res.send({
                     success: true,
