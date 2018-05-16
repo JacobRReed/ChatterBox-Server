@@ -12,7 +12,11 @@ app.use(bodyParser.json());
 var router = express.Router();
 
 //AccuWeather API key
-const weatherKey = process.env.WEATHER_KEY_TWO;
+//WEATHER_KEY: QEceomVSxVD94ogNL8rkqjo3Uox9kzYr
+//WEATHER_KEY_TWO: wNs4Ho04XKfP0brbzZ6UEx5CWAzfR8kf
+//WEATHER_KEY_THREE: ooHh2TDo75iOOzIBVuaTDEjoajW4YGQA
+//WEATHER_KEY_FOUR:TApJoxwCK8G2NS6ujx0OHilm9boDegCT
+const weatherKey = "TApJoxwCK8G2NS6ujx0OHilm9boDegCT";
 
 
 cityCode = ""; //City code
@@ -25,6 +29,11 @@ var ccIcon = 0; //weather icon number https://developer.accuweather.com/weather-
 var ccURL = "test"; //URL for get
 var hourlyData = [];
 var fiveDayData = [];
+
+////TEMP
+var latLon = "40.8,-77.8";
+
+var latLongCityCodeURL = ("http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=" + weatherKey + "&q=" + latLon);
 
 //Get city code
 const httpGet = url => {
@@ -60,9 +69,6 @@ const ccGet = url => {
                     reject(new Error(err));
                 }
                 resolve({
-                    //text: body[0].WeatherText,
-                    //temp: body[0].Temperature.Imperial.Value,
-                    //icon: body[0].WeatherIcon
                     body: body
                 });
             });
@@ -110,65 +116,61 @@ const fiveGet = url => {
     });
 };
 
-router.post('/', (req, res) => {
-    let lat = req.body['lat'];
-    let lon = req.body['lon'];
-    var latLongCityCodeURL = ("http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=" + weatherKey + "&q=" + lat + "," + lon);
-
-    //Get city code from lat lon
-    httpGet(latLongCityCodeURL).then(data => {
-        cityCode = data.code;
-        cityName = data.name;
-        ccURL = ("http://dataservice.accuweather.com/currentconditions/v1/" + cityCode + "?apikey=" + weatherKey);
-        twelveURL = ("http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/" + cityCode + "?apikey=" + weatherKey);
-        fiveURL = ("http://dataservice.accuweather.com/forecasts/v1/daily/5day/" + cityCode + "?apikey=" + weatherKey);
-        //Get Current Conditions
-        ccGet(ccURL).then(dataCC => {
-            ccTemp = dataCC.temp;
-            ccWeatherText = dataCC.text;
-            ccIcon = dataCC.icon;
-            //Get 12 hour forecast
-            twelveGet(twelveURL).then(dataTwelve => {
-                //Generate hourly data
-                for (i = 0; i < dataTwelve.length; i++) {
-                    hourlyData[i] = {
-                        time: dataTwelve[i].EpochDateTime,
-                        temp: dataTwelve[i].Temperature.Value,
-                        text: dataTwelve[i].IconPhrase,
-                        icon: dataTwelve[i].WeatherIcon
-                    };
-                }
-                console.log("Hourly Data: " + hourlyData);
-            }).catch(err => console.log(err));
+//Get city code from lat lon
+httpGet(latLongCityCodeURL).then(data => {
+    cityCode = data.code;
+    cityName = data.name;
+    ccURL = ("http://dataservice.accuweather.com/currentconditions/v1/" + cityCode + "?apikey=" + weatherKey);
+    twelveURL = ("http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/" + cityCode + "?apikey=" + weatherKey);
+    fiveURL = ("http://dataservice.accuweather.com/forecasts/v1/daily/5day/" + cityCode + "?apikey=" + weatherKey);
+    //Get Current Conditions
+    ccGet(ccURL).then(dataCC => {
+        let ccBody = dataCC.body[0];
+        ccTemp = ccBody.Temperature.Imperial.Value;
+        ccWeatherText = ccBody.WeatherText;
+        ccIcon = ccBody.WeatherIcon;
+        //Get 12 hour forecast
+        twelveGet(twelveURL).then(dataTwelve => {
+            let twelveBody = dataTwelve.body;
+            //Generate hourly data
+            for (i = 0; i < twelveBody.length; i++) {
+                hourlyData[i] = {
+                    time: twelveBody[i].EpochDateTime,
+                    temp: twelveBody[i].Temperature.Value,
+                    text: twelveBody[i].IconPhrase,
+                    icon: twelveBody[i].WeatherIcon
+                };
+            }
             fiveGet(fiveURL).then(dataFive => {
+                //console.log(dataFive.body.DailyForecasts);
+                let fiveBody = dataFive.body.DailyForecasts;
                 //Generate five day data
-                for (i = 0; i < dataFive.length; i++) {
-                    fiveDayData[i] = {
-                        time: dataFive[i].EpochDate,
-                        min: dataFive[i].Temperature.Minimum.Value,
-                        max: dataFive[i].Temperature.Maximum.Value,
-                        iconDay: dataFive[i].Day.Icon,
-                        iconNight: dataFive[i].Night.Icon,
-                        dayPhrase: dataFive[i].Day.IconPhrase,
-                        nightPhrase: dataFive[i].Night.IconPhrase
+                for (j = 0; j < fiveBody.length; j++) {
+                    fiveDayData[j] = {
+                        time: fiveBody[j].EpochDate,
+                        min: fiveBody[j].Temperature.Minimum.Value,
+                        max: fiveBody[j].Temperature.Maximum.Value,
+                        iconDay: fiveBody[j].Day.Icon,
+                        iconNight: fiveBody[j].Night.Icon,
+                        dayPhrase: fiveBody[j].Day.IconPhrase,
+                        nightPhrase: fiveBody[j].Night.IconPhrase
                     };
-                    console.log("5 Day Data:" + fiveDayData);
                 }
-                res.send({
-                    success: true,
-                    cityName: cityName,
-                    cityCode: cityCode,
-                    currentConditions: {
-                        temp: ccTemp,
-                        icon: ccIcon,
-                        text: ccWeatherText
-                    },
-                    hourlyData: hourlyData,
-                    fiveDayData: fiveDayData
-                });
+                //TEST LOGS
+                console.log("City Name: " + cityName + ", Code: " + cityCode);
+                console.log("Current Conditions: " + ccWeatherText + ", " + ccTemp + " F");
+                console.log("12 hour: " + JSON.stringify(hourlyData));
+                console.log("5 day: " + JSON.stringify(fiveDayData));
             }).catch(err => console.log(err));
         }).catch(err => console.log(err));
-    }).catch(err => console.log('Got error ', err));
+    }).catch(err => console.log(err));
+}).catch(err => console.log('Got error ', err));
+
+
+router.post('/', (req, res) => {
+    res.send({
+        success: "true"
+    });
 });
 
 
