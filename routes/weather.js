@@ -130,7 +130,7 @@ router.post('/', (req, res) => {
                 //Generate hourly data
                 for (i = 0; i < dataTwelve.length; i++) {
                     hourlyData[i] = {
-                        time: dataTwelve[i].EpochDateTime;
+                        time: dataTwelve[i].EpochDateTime,
                         temp: dataTwelve[i].Temperature.Value,
                         text: dataTwelve[i].IconPhrase,
                         icon: dataTwelve[i].WeatherIcon
