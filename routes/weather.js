@@ -60,9 +60,10 @@ const ccGet = url => {
                     reject(new Error(err));
                 }
                 resolve({
-                    text: body[0].WeatherText,
-                    temp: body[0].Temperature.Imperial.Value,
-                    icon: body[0].WeatherIcon
+                    //text: body[0].WeatherText,
+                    //temp: body[0].Temperature.Imperial.Value,
+                    //icon: body[0].WeatherIcon
+                    body: body
                 });
             });
         }).on('error', reject);
