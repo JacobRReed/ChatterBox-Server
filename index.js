@@ -54,6 +54,8 @@ app.use('/resetpassword', resetpassword);
 var validateregistration = require('./routes/validateregistration.js');
 app.use('/validateregistration', validateregistration);
 
+var weather = require('./routes/weather.js');
+app.use('/weather', weather);
 /*
  * Return HTML for the / end point.
  * This is a nice location to document your web service API
