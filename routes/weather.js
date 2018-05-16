@@ -152,6 +152,8 @@ router.post('/', (req, res) => {
                 }
                 res.send({
                     success: true,
+                    cityName: cityName,
+                    cityCode: cityCode,
                     currentConditions: {
                         temp: ccTemp,
                         icon: ccIcon,
