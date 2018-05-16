@@ -12,11 +12,7 @@ app.use(bodyParser.json());
 var router = express.Router();
 
 //AccuWeather API key
-//WEATHER_KEY: QEceomVSxVD94ogNL8rkqjo3Uox9kzYr
-//WEATHER_KEY_TWO: wNs4Ho04XKfP0brbzZ6UEx5CWAzfR8kf
-//WEATHER_KEY_THREE: ooHh2TDo75iOOzIBVuaTDEjoajW4YGQA
-//WEATHER_KEY_FOUR:TApJoxwCK8G2NS6ujx0OHilm9boDegCT
-const weatherKey = "TApJoxwCK8G2NS6ujx0OHilm9boDegCT";
+const weatherKey = process.env.WEATHER_KEY_FOUR;
 
 
 cityCode = ""; //City code
