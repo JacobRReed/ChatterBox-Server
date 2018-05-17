@@ -12,8 +12,8 @@ app.use(bodyParser.json());
 var router = express.Router();
 
 //AccuWeather API key
-//const weatherKey = process.env.WEATHER_KEY_FINAL;
-const weatherKey = "20f0da32b3423f7795a28b32627bc970";
+const weatherKey = process.env.WEATHER_KEY_FINAL;
+
 const latitudePos = "47.25";
 const longitudePos = "-122.44";
 //let ccURL = ("http://api.openweathermap.org/data/2.5/weather?lat=" + latitudePos + "&lon=" + longitudePos + "&APPID=" + weatherKey);
