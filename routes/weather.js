@@ -12,63 +12,15 @@ app.use(bodyParser.json());
 var router = express.Router();
 
 //AccuWeather API key
-const weatherKey = process.env.WEATHER_KEY_FIVE;
-
-
-cityCode = ""; //City code
-cityName = "";
-
-//Current Conditions Vars
-var ccWeatherText = ""; //Text for weather at location
-var ccTemp = 0; //Degrees Farenheit
-var ccIcon = 0; //weather icon number https://developer.accuweather.com/weather-icons
-var ccURL = ""; //URL for get
-var hourlyData = [];
-var fiveDayData = [];
-
-//Get city code
-const httpGet = url => {
-    return new Promise((resolve, reject) => {
-        http.get(url, res => {
-            let body = '';
-            res.on('data', chunk => body += chunk);
-            res.on('end', () => {
-                try {
-                    body = JSON.parse(body);
-                } catch (err) {
-                    reject(new Error(err));
-                }
-                resolve({
-                    code: body.Key,
-                    name: body.EnglishName
-                });
-            });
-        }).on('error', reject);
-    });
-};
+//const weatherKey = process.env.WEATHER_KEY_FINAL;
+const weatherKey = "20f0da32b3423f7795a28b32627bc970";
+const latitudePos = "47.25";
+const longitudePos = "-122.44";
+let ccURL = ("http://api.openweathermap.org/data/2.5/weather?lat=" + latitudePos + "&lon=" + longitudePos + "&APPID=" + weatherKey);
+let fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?lat=" + latitudePos + "&lon=" + longitudePos + "&APPID=" + weatherKey);
 
 //Current Conditions
 const ccGet = url => {
-    return new Promise((resolve, reject) => {
-        http.get(url, res => {
-            let body = '';
-            res.on('data', chunk => body += chunk);
-            res.on('end', () => {
-                try {
-                    body = JSON.parse(body);
-                } catch (err) {
-                    reject(new Error(err));
-                }
-                resolve({
-                    body: body
-                });
-            });
-        }).on('error', reject);
-    });
-};
-
-//12 hour
-const twelveGet = url => {
     return new Promise((resolve, reject) => {
         http.get(url, res => {
             let body = '';
@@ -107,73 +59,57 @@ const fiveGet = url => {
     });
 };
 
-
-
 router.post('/', (req, res) => {
-    let lat = req.body['latitude'];
-    let lon = req.body['longitude'];
-    var latLongCityCodeURL = ("http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=" + weatherKey + "&q=" + lat + "," + lon);
-    //Get city code from lat lon
-    httpGet(latLongCityCodeURL).then(data => {
-        cityCode = data.code;
-        cityName = data.name;
-        ccURL = ("http://dataservice.accuweather.com/currentconditions/v1/" + cityCode + "?apikey=" + weatherKey);
-        twelveURL = ("http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/" + cityCode + "?apikey=" + weatherKey);
-        fiveURL = ("http://dataservice.accuweather.com/forecasts/v1/daily/5day/" + cityCode + "?apikey=" + weatherKey);
-        //Get Current Conditions
-        ccGet(ccURL).then(dataCC => {
-            let ccBody = dataCC.body[0];
-            ccTemp = ccBody.Temperature.Imperial.Value;
-            ccWeatherText = ccBody.WeatherText;
-            ccIcon = ccBody.WeatherIcon;
-            //Get 12 hour forecast
-            twelveGet(twelveURL).then(dataTwelve => {
-                let twelveBody = dataTwelve.body;
-                //Generate hourly data
-                for (i = 0; i < twelveBody.length; i++) {
-                    hourlyData[i] = {
-                        time: twelveBody[i].EpochDateTime,
-                        temp: twelveBody[i].Temperature.Value,
-                        text: twelveBody[i].IconPhrase,
-                        icon: twelveBody[i].WeatherIcon
-                    };
-                }
-                fiveGet(fiveURL).then(dataFive => {
-                    //console.log(dataFive.body.DailyForecasts);
-                    let fiveBody = dataFive.body.DailyForecasts;
-                    //Generate five day data
-                    for (j = 0; j < fiveBody.length; j++) {
-                        fiveDayData[j] = {
-                            time: fiveBody[j].EpochDate,
-                            min: fiveBody[j].Temperature.Minimum.Value,
-                            max: fiveBody[j].Temperature.Maximum.Value,
-                            iconDay: fiveBody[j].Day.Icon,
-                            iconNight: fiveBody[j].Night.Icon,
-                            dayPhrase: fiveBody[j].Day.IconPhrase,
-                            nightPhrase: fiveBody[j].Night.IconPhrase
-                        };
-                    }
-                    //TEST LOGS
-                    console.log("City Name: " + cityName + ", Code: " + cityCode);
-                    console.log("Current Conditions: " + ccWeatherText + ", " + ccTemp + " F");
-                    console.log("12 hour: " + JSON.stringify(hourlyData));
-                    console.log("5 day: " + JSON.stringify(fiveDayData));
-                    res.send({
-                        cityName: cityName,
-                        cityCode: cityCode,
-                        currentConditions: {
-                            temp: ccTemp,
-                            icon: ccIcon,
-                            text: ccWeatherText
-                        },
-                        twelveHour: hourlyData,
-                        fiveDay: fiveDayData
-                    });
-                }).catch(err => console.log(err));
-            }).catch(err => console.log(err));
-        }).catch(err => console.log(err));
-    }).catch(err => console.log('Got error ', err));
+
+}).catch((err) => {
+    console.log(err)
 });
+
+//Get calls
+ccGet(ccURL).then(dataCC => {
+    //Get cc stuff
+    let currentWeather = dataCC.body.weather[0].main;
+    let currentIcon = dataCC.body.weather[0].icon;
+    let currentTemp = Math.round((dataCC.body.main.temp * (9 / 5) - 459.67));
+    let currentSunrise = new Date(dataCC.body.sys.sunrise * 1000);
+    currentSunrise = currentSunrise.getHours() + ":" + currentSunrise.getMinutes();
+    let currentSunset = new Date(dataCC.body.sys.sunset * 1000);
+    currentSunset = currentSunset.getHours() + ":" + currentSunset.getMinutes();
+    let currentCity = dataCC.body.name;
+    //Test output logs
+    console.log("Current Conditions\n-----------------");
+    console.log("City: " + currentCity);
+    console.log("Current Weather: " + currentWeather);
+    console.log("Icon: " + currentIcon);
+    console.log("Temperature: " + currentTemp);
+    console.log("Sunrise Time: " + currentSunrise);
+    console.log("Sunset Time: " + currentSunset);
+    fiveGet(fiveDayURL).then(dataFive => {
+        //get 5 day stuff
+        let currentDay = new Date().getDate(); //Current day number, get the next 3 days
+        currentDay = parseInt(currentDay);
+        let fiveDayForecast = [];
+        let visited = [];
+        for (i = 0; i < dataFive.body.list.length; i++) {
+            let tempDate = new Date(dataFive.body.list[i].dt * 1000);
+            tempDate = tempDate.getDate(); //current day number of month
+            tempDate = parseInt(tempDate);
+            if (tempDate !== currentDay && !visited.includes(tempDate)) { //If day in list is not today, and it hasnt been visited already
+                let tempDay = new Date(dataFive.body.list[i].dt * 1000); //day
+                tempDay = tempDay.toString().split(' ')[0]; //Get name of day
+                visited.push(tempDate);
+                fiveDayForecast.push({
+                    day: tempDay,
+                    temp: (Math.round((dataFive.body.list[i].main.temp * (9 / 5) - 459.67))),
+                    icon: dataFive.body.list[i].weather[0].icon,
+                    text: dataFive.body.list[i].weather[0].description
+                });
+            }
+        }
+        console.log("5 Day Data: " + JSON.stringify(fiveDayForecast));
+    }).catch(err => console.log(err));
+}).catch(err => console.log(err));
+
 
 
 module.exports = router;
