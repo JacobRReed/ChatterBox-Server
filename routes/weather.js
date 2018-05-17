@@ -16,8 +16,8 @@ var router = express.Router();
 const weatherKey = "20f0da32b3423f7795a28b32627bc970";
 const latitudePos = "47.25";
 const longitudePos = "-122.44";
-let ccURL = ("http://api.openweathermap.org/data/2.5/weather?lat=" + latitudePos + "&lon=" + longitudePos + "&APPID=" + weatherKey);
-let fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?lat=" + latitudePos + "&lon=" + longitudePos + "&APPID=" + weatherKey);
+//let ccURL = ("http://api.openweathermap.org/data/2.5/weather?lat=" + latitudePos + "&lon=" + longitudePos + "&APPID=" + weatherKey);
+//let fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?lat=" + latitudePos + "&lon=" + longitudePos + "&APPID=" + weatherKey);
 
 //Current Conditions
 const ccGet = url => {
@@ -60,55 +60,77 @@ const fiveGet = url => {
 };
 
 router.post('/', (req, res) => {
+    let lat = req.body['lat'];
+    let lon = req.body['lon'];
+    let ccURL = ("http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=" + weatherKey);
+    let fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&APPID=" + weatherKey);
+    //Get calls
+    ccGet(ccURL).then(dataCC => {
+        //Get cc stuff
+        let currentWeather = dataCC.body.weather[0].main;
+        let currentIcon = dataCC.body.weather[0].icon;
+        let currentTemp = Math.round((dataCC.body.main.temp * (9 / 5) - 459.67));
+        let currentSunrise = new Date(dataCC.body.sys.sunrise * 1000);
+        currentSunrise = currentSunrise.getHours() + ":" + currentSunrise.getMinutes();
+        let currentSunset = new Date(dataCC.body.sys.sunset * 1000);
+        currentSunset = currentSunset.getHours() + ":" + currentSunset.getMinutes();
+        let currentCity = dataCC.body.name;
+        //Test output logs
+        console.log("Current Conditions\n-----------------");
+        console.log("City: " + currentCity);
+        console.log("Current Weather: " + currentWeather);
+        console.log("Icon: " + currentIcon);
+        console.log("Temperature: " + currentTemp);
+        console.log("Sunrise Time: " + currentSunrise);
+        console.log("Sunset Time: " + currentSunset);
+        //Define result variables
+        let currentConditionVars = {
+            weather: currentWeather,
+            icon: currentIcon,
+            temp: currentTemp,
+            city: currentCity
+        };
+        let sunVars = {
+            sunrise: currentSunrise,
+            sunset: currentSunset
+        };
+        res.write({
+            currentConditions: currentConditionVars,
+            sunRiseSet: sunVars
+        });
 
-}).catch((err) => {
-    console.log(err)
+        fiveGet(fiveDayURL).then(dataFive => {
+            //get 5 day stuff
+            let currentDay = new Date().getDate(); //Current day number, get the next 3 days
+            currentDay = parseInt(currentDay);
+            let fiveDayForecast = [];
+            let visited = [];
+            for (i = 0; i < dataFive.body.list.length; i++) {
+                let tempDate = new Date(dataFive.body.list[i].dt * 1000);
+                tempDate = tempDate.getDate(); //current day number of month
+                tempDate = parseInt(tempDate);
+                if (tempDate !== currentDay && !visited.includes(tempDate)) { //If day in list is not today, and it hasnt been visited already
+                    let tempDay = new Date(dataFive.body.list[i].dt * 1000); //day
+                    tempDay = tempDay.toString().split(' ')[0]; //Get name of day
+                    visited.push(tempDate);
+                    fiveDayForecast.push({
+                        day: tempDay,
+                        temp: (Math.round((dataFive.body.list[i].main.temp * (9 / 5) - 459.67))),
+                        icon: dataFive.body.list[i].weather[0].icon,
+                        text: dataFive.body.list[i].weather[0].description
+                    });
+                }
+            }
+            console.log("5 Day Data: " + JSON.stringify(fiveDayForecast));
+            res.write({
+                fiveDay: fiveDayForecast
+            });
+            res.end();
+        }).catch(err => console.log(err));
+    }).catch(err => console.log(err));
 });
 
-//Get calls
-ccGet(ccURL).then(dataCC => {
-    //Get cc stuff
-    let currentWeather = dataCC.body.weather[0].main;
-    let currentIcon = dataCC.body.weather[0].icon;
-    let currentTemp = Math.round((dataCC.body.main.temp * (9 / 5) - 459.67));
-    let currentSunrise = new Date(dataCC.body.sys.sunrise * 1000);
-    currentSunrise = currentSunrise.getHours() + ":" + currentSunrise.getMinutes();
-    let currentSunset = new Date(dataCC.body.sys.sunset * 1000);
-    currentSunset = currentSunset.getHours() + ":" + currentSunset.getMinutes();
-    let currentCity = dataCC.body.name;
-    //Test output logs
-    console.log("Current Conditions\n-----------------");
-    console.log("City: " + currentCity);
-    console.log("Current Weather: " + currentWeather);
-    console.log("Icon: " + currentIcon);
-    console.log("Temperature: " + currentTemp);
-    console.log("Sunrise Time: " + currentSunrise);
-    console.log("Sunset Time: " + currentSunset);
-    fiveGet(fiveDayURL).then(dataFive => {
-        //get 5 day stuff
-        let currentDay = new Date().getDate(); //Current day number, get the next 3 days
-        currentDay = parseInt(currentDay);
-        let fiveDayForecast = [];
-        let visited = [];
-        for (i = 0; i < dataFive.body.list.length; i++) {
-            let tempDate = new Date(dataFive.body.list[i].dt * 1000);
-            tempDate = tempDate.getDate(); //current day number of month
-            tempDate = parseInt(tempDate);
-            if (tempDate !== currentDay && !visited.includes(tempDate)) { //If day in list is not today, and it hasnt been visited already
-                let tempDay = new Date(dataFive.body.list[i].dt * 1000); //day
-                tempDay = tempDay.toString().split(' ')[0]; //Get name of day
-                visited.push(tempDate);
-                fiveDayForecast.push({
-                    day: tempDay,
-                    temp: (Math.round((dataFive.body.list[i].main.temp * (9 / 5) - 459.67))),
-                    icon: dataFive.body.list[i].weather[0].icon,
-                    text: dataFive.body.list[i].weather[0].description
-                });
-            }
-        }
-        console.log("5 Day Data: " + JSON.stringify(fiveDayForecast));
-    }).catch(err => console.log(err));
-}).catch(err => console.log(err));
+
 
 
 
