@@ -94,10 +94,11 @@ router.post('/', (req, res) => {
             sunrise: currentSunrise,
             sunset: currentSunset
         };
-        res.send({
-            currentConditions: currentConditionVars,
-            sun: sunVars
-        });
+        /*
+                res.send({
+                    currentConditions: currentConditionVars,
+                    sun: sunVars
+                });*/
 
         fiveGet(fiveDayURL).then(dataFive => {
             //get 5 day stuff
@@ -123,6 +124,8 @@ router.post('/', (req, res) => {
             }
             console.log("5 Day Data: " + JSON.stringify(fiveDayForecast));
             res.send({
+                currentConditions: currentConditionVars,
+                sun: sunVars,
                 fiveDay: fiveDayForecast
             });
             res.end();
