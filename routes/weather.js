@@ -22,14 +22,9 @@ cityName = "";
 var ccWeatherText = ""; //Text for weather at location
 var ccTemp = 0; //Degrees Farenheit
 var ccIcon = 0; //weather icon number https://developer.accuweather.com/weather-icons
-var ccURL = "test"; //URL for get
+var ccURL = ""; //URL for get
 var hourlyData = [];
 var fiveDayData = [];
-
-////TEMP
-var latLon = "40.8,-77.8";
-
-var latLongCityCodeURL = ("http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=" + weatherKey + "&q=" + latLon);
 
 //Get city code
 const httpGet = url => {
@@ -112,61 +107,72 @@ const fiveGet = url => {
     });
 };
 
-//Get city code from lat lon
-httpGet(latLongCityCodeURL).then(data => {
-    cityCode = data.code;
-    cityName = data.name;
-    ccURL = ("http://dataservice.accuweather.com/currentconditions/v1/" + cityCode + "?apikey=" + weatherKey);
-    twelveURL = ("http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/" + cityCode + "?apikey=" + weatherKey);
-    fiveURL = ("http://dataservice.accuweather.com/forecasts/v1/daily/5day/" + cityCode + "?apikey=" + weatherKey);
-    //Get Current Conditions
-    ccGet(ccURL).then(dataCC => {
-        let ccBody = dataCC.body[0];
-        ccTemp = ccBody.Temperature.Imperial.Value;
-        ccWeatherText = ccBody.WeatherText;
-        ccIcon = ccBody.WeatherIcon;
-        //Get 12 hour forecast
-        twelveGet(twelveURL).then(dataTwelve => {
-            let twelveBody = dataTwelve.body;
-            //Generate hourly data
-            for (i = 0; i < twelveBody.length; i++) {
-                hourlyData[i] = {
-                    time: twelveBody[i].EpochDateTime,
-                    temp: twelveBody[i].Temperature.Value,
-                    text: twelveBody[i].IconPhrase,
-                    icon: twelveBody[i].WeatherIcon
-                };
-            }
-            fiveGet(fiveURL).then(dataFive => {
-                //console.log(dataFive.body.DailyForecasts);
-                let fiveBody = dataFive.body.DailyForecasts;
-                //Generate five day data
-                for (j = 0; j < fiveBody.length; j++) {
-                    fiveDayData[j] = {
-                        time: fiveBody[j].EpochDate,
-                        min: fiveBody[j].Temperature.Minimum.Value,
-                        max: fiveBody[j].Temperature.Maximum.Value,
-                        iconDay: fiveBody[j].Day.Icon,
-                        iconNight: fiveBody[j].Night.Icon,
-                        dayPhrase: fiveBody[j].Day.IconPhrase,
-                        nightPhrase: fiveBody[j].Night.IconPhrase
-                    };
-                }
-                //TEST LOGS
-                console.log("City Name: " + cityName + ", Code: " + cityCode);
-                console.log("Current Conditions: " + ccWeatherText + ", " + ccTemp + " F");
-                console.log("12 hour: " + JSON.stringify(hourlyData));
-                console.log("5 day: " + JSON.stringify(fiveDayData));
-            }).catch(err => console.log(err));
-        }).catch(err => console.log(err));
-    }).catch(err => console.log(err));
-}).catch(err => console.log('Got error ', err));
 
 
 router.post('/', (req, res) => {
-    res.send({
-        success: "true"
-    });
+    let lat = req.body['latitude'];
+    let lon = req.body['longitude'];
+    var latLongCityCodeURL = ("http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=" + weatherKey + "&q=" + lat + "," + lon);
+    //Get city code from lat lon
+    httpGet(latLongCityCodeURL).then(data => {
+        cityCode = data.code;
+        cityName = data.name;
+        ccURL = ("http://dataservice.accuweather.com/currentconditions/v1/" + cityCode + "?apikey=" + weatherKey);
+        twelveURL = ("http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/" + cityCode + "?apikey=" + weatherKey);
+        fiveURL = ("http://dataservice.accuweather.com/forecasts/v1/daily/5day/" + cityCode + "?apikey=" + weatherKey);
+        //Get Current Conditions
+        ccGet(ccURL).then(dataCC => {
+            let ccBody = dataCC.body[0];
+            ccTemp = ccBody.Temperature.Imperial.Value;
+            ccWeatherText = ccBody.WeatherText;
+            ccIcon = ccBody.WeatherIcon;
+            //Get 12 hour forecast
+            twelveGet(twelveURL).then(dataTwelve => {
+                let twelveBody = dataTwelve.body;
+                //Generate hourly data
+                for (i = 0; i < twelveBody.length; i++) {
+                    hourlyData[i] = {
+                        time: twelveBody[i].EpochDateTime,
+                        temp: twelveBody[i].Temperature.Value,
+                        text: twelveBody[i].IconPhrase,
+                        icon: twelveBody[i].WeatherIcon
+                    };
+                }
+                fiveGet(fiveURL).then(dataFive => {
+                    //console.log(dataFive.body.DailyForecasts);
+                    let fiveBody = dataFive.body.DailyForecasts;
+                    //Generate five day data
+                    for (j = 0; j < fiveBody.length; j++) {
+                        fiveDayData[j] = {
+                            time: fiveBody[j].EpochDate,
+                            min: fiveBody[j].Temperature.Minimum.Value,
+                            max: fiveBody[j].Temperature.Maximum.Value,
+                            iconDay: fiveBody[j].Day.Icon,
+                            iconNight: fiveBody[j].Night.Icon,
+                            dayPhrase: fiveBody[j].Day.IconPhrase,
+                            nightPhrase: fiveBody[j].Night.IconPhrase
+                        };
+                    }
+                    //TEST LOGS
+                    console.log("City Name: " + cityName + ", Code: " + cityCode);
+                    console.log("Current Conditions: " + ccWeatherText + ", " + ccTemp + " F");
+                    console.log("12 hour: " + JSON.stringify(hourlyData));
+                    console.log("5 day: " + JSON.stringify(fiveDayData));
+                    res.send({
+                        cityName: cityName,
+                        cityCode: cityCode,
+                        currentConditions: {
+                            temp: ccTemp,
+                            icon: ccIcon,
+                            text: ccWeatherText
+                        },
+                        twelveHour: hourlyData,
+                        fiveDay: fiveDayData
+                    });
+                }).catch(err => console.log(err));
+            }).catch(err => console.log(err));
+        }).catch(err => console.log(err));
+    }).catch(err => console.log('Got error ', err));
 });
 
 
