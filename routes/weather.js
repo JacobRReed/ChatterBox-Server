@@ -14,8 +14,8 @@ var router = express.Router();
 //AccuWeather API key
 const weatherKey = process.env.WEATHER_KEY_FINAL;
 
-const latitudePos = "47.25";
-const longitudePos = "-122.44";
+const latitudePos = "47.25"; //tacoma hard code
+const longitudePos = "-122.44"; //tacoma hard code
 
 //Current Conditions
 const ccGet = url => {
@@ -59,16 +59,17 @@ const fiveGet = url => {
 
 router.post('/', (req, res) => {
     let zip = req.body['searchByZip']; //If true search by zip, else search by lat lon
-    
+    let ccURL = "";
+    let fiveDayURL = "";
     if(zip) {
         let zipCode = req.body['zip'];
-        let ccURL = ("http://api.openweathermap.org/data/2.5/weather?zip=" + zipCode + "&APPID=" + weatherKey);
-        let fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?zip=" + zipCode + "&APPID=" + weatherKey);
+        ccURL = ("http://api.openweathermap.org/data/2.5/weather?zip=" + zipCode + "&APPID=" + weatherKey);
+        fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?zip=" + zipCode + "&APPID=" + weatherKey);
     } else {
         let lat = req.body['lat'];
         let lon = req.body['lon'];
-        let ccURL = ("http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=" + weatherKey);
-        let fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&APPID=" + weatherKey);
+        ccURL = ("http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=" + weatherKey);
+        fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&APPID=" + weatherKey);
     }
 
     //Get calls
