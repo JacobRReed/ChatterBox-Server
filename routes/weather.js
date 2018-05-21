@@ -16,8 +16,6 @@ const weatherKey = process.env.WEATHER_KEY_FINAL;
 
 const latitudePos = "47.25";
 const longitudePos = "-122.44";
-//let ccURL = ("http://api.openweathermap.org/data/2.5/weather?lat=" + latitudePos + "&lon=" + longitudePos + "&APPID=" + weatherKey);
-//let fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?lat=" + latitudePos + "&lon=" + longitudePos + "&APPID=" + weatherKey);
 
 //Current Conditions
 const ccGet = url => {
@@ -60,10 +58,19 @@ const fiveGet = url => {
 };
 
 router.post('/', (req, res) => {
-    let lat = req.body['lat'];
-    let lon = req.body['lon'];
-    let ccURL = ("http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=" + weatherKey);
-    let fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&APPID=" + weatherKey);
+    let zip = req.body['searchByZip']; //If true search by zip, else search by lat lon
+    
+    if(zip) {
+        let zipCode = req.body['zip'];
+        let ccURL = ("http://api.openweathermap.org/data/2.5/weather?zip=" + zipCode + "&APPID=" + weatherKey);
+        let fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?zip=" + zipCode + "&APPID=" + weatherKey);
+    } else {
+        let lat = req.body['lat'];
+        let lon = req.body['lon'];
+        let ccURL = ("http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=" + weatherKey);
+        let fiveDayURL = ("http://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&APPID=" + weatherKey);
+    }
+
     //Get calls
     ccGet(ccURL).then(dataCC => {
         //Get cc stuff
