@@ -18,7 +18,33 @@ router.post("/makeChat", (req, res) => {
     });
     return;
   }
-  let insert = 'INSERT INTO Chats(Name) VALUES($1)'
+  let insert = 'INSERT INTO Chats(Name) VALUES($1) RETURNING chatid'
+  db.one(insert, [name])
+    .then((chatid) => {
+      res.send({
+        success: true,
+        chatid: chatid
+      });
+    }).catch((err) => {
+      res.send({
+        success: false,
+        error: err,
+    });
+  });
+});
+
+router.post("/deleteChat", (req, res) => {
+  let name = req.body['name'];
+  // let message = req.body['message'];
+  // let chatId = req.body['chatId'];
+  if(!name) {
+    res.send({
+      success: false,
+      error: "Name not supplied"
+    });
+    return;
+  }
+  let insert = 'DELETE FROM Chats WHERE name = ' + name;
   db.none(insert, [name])
     .then(() => {
       res.send({
@@ -33,11 +59,11 @@ router.post("/makeChat", (req, res) => {
 });
 
 // done
-var router = express.Router();
+//var router = express.Router();
 router.post("/addFriendToChat", (req, res) => {
   let chatid = req.body['chatid'];
-  let memid = req.body['memid'];
-  db.none('INSERT INTO CHATMEMBERS(CHATID, MEMBERID) VALUES(' + chatid + ', ' + memid + ')')
+  let username = req.body['username'];
+  db.none('INSERT INTO CHATMEMBERS(CHATID, MEMBERID) VALUES(' + chatid + ', (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER('+ username +')))')
     .then(() => {
       res.send({
         success: true
@@ -45,7 +71,7 @@ router.post("/addFriendToChat", (req, res) => {
     }).catch((err) => {
       res.send({
         success: false,
-        error: "the thing you typed in were: " + chatid + " and " + memid,
+        error: "the thing you typed in were: " + chatid + " and " + username,
     });
   });
 });
@@ -87,41 +113,72 @@ router.post("/getChat", (req, res) => {
 });
 
 
+// router.post("/MakeAndAddToChat", (req, res) => {
+//   let chatname = req.body['chatname'];
+//   let username = req.body['username'];
+//   let friendUsername = req.body['friendUsername'];
+//   db.none('INSERT INTO Chats(Name) VALUES($1) ', [chatname])
+//     .then(() => {
+//       db.none('INSERT INTO CHATMEMBERS(CHATID, MEMBERID) VALUES((SELECT chatID FROM CHATS WHERE NAME = $1), (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($2)))', [chatname, username])
+//         .then(() => {
+//           db.none('INSERT INTO CHATMEMBERS(CHATID, MEMBERID) VALUES((SELECT chatID FROM CHATS WHERE NAME = $1), (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($2)))', [chatname, friendUsername])
+//             .then(() => {
+//               res.send({
+//                 success: true
+//               });
+//             }).catch((err) => {
+//               res.send({
+//                 success: false,
+//                 error: 'ERROR 3: ' + friendUsername,
+//             });
+//           });
+//         }).catch((err) => {
+//           res.send({
+//             success: false,
+//             error: 'ERROR 2: ' + username,
+//         });
+//       });
+//     }).catch((err) => {
+//       res.send({
+//         success: false,
+//         error: 'ERROR 1: ' + chatname,
+//     });
+//   });
+// });
+
+
 //---------------
 
 // var router = express.Router();
-router.post("/MakeAndAddToChat", (req, res) => {
-  let chatname = req.body['chatname'];
-  let username = req.body['username'];
-  let friendUsername = req.body['friendUsername'];
-  db.none('INSERT INTO Chats(Name) VALUES($1)', [chatname])
-    .then(() => {
-      db.none('INSERT INTO CHATMEMBERS(CHATID, MEMBERID) VALUES((SELECT chatID FROM CHATS WHERE NAME = $1), (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($2)))', [chatname, username])
-        .then(() => {
-          db.none('INSERT INTO CHATMEMBERS(CHATID, MEMBERID) VALUES((SELECT chatID FROM CHATS WHERE NAME = $1), (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($2)))', [chatname, friendUsername])
-            .then(() => {
-              res.send({
-                success: true
-              });
-            }).catch((err) => {
-              res.send({
-                success: false,
-                error: 'ERROR 3: ' + friendUsername,
-            });
-          });
-        }).catch((err) => {
-          res.send({
-            success: false,
-            error: 'ERROR 2: ' + username,
-        });
-      });
-    }).catch((err) => {
-      res.send({
-        success: false,
-        error: 'ERROR 1: ' + chatname,
-    });
-  });
-});
+// router.post("/MakeAndAddToChat", (req, res) => {
+//   let chatname = req.body['chatname'];
+//   let username = req.body['username'];
+//   let friendUsername = req.query['friendUsername'];
+//   db.one('INSERT INTO Chats(Name) VALUES($1) RETURNING chatid', [chatname])
+//     .then((row) => {
+//       let chatid = row.chatid;
+//       for(let i = 0; i < numberOfFriends; i++) {
+//         db.none('INSERT INTO CHATMEMBERS(CHATID, MEMBERID) VALUES($1, (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($2)))', [chatid, friendUsername])
+//         .then(() => {
+//           res.send({
+//             success: true
+//           });
+//         }).catch((err) => {
+//           res.send({
+//             success: false,
+//             error: 'ERROR 2: ' + friendUsername,
+//           });
+//         });
+//       }
+      
+      
+//     }).catch((err) => {
+//       res.send({
+//         success: false,
+//         error: 'ERROR 1: ' + chatname,
+//     });
+//   });
+// });
 
 //-----
 
