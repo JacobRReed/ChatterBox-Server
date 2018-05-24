@@ -33,7 +33,7 @@ router.post("/sendMessages", (req, res) => {
 
 router.get("/getMessages4", (req, res) => {
   let chatId = req.query['chatId'];
-  let query = 'SELECT MESSAGE, TIMESTAMP, MEMBERID FROM MESAGES WHERE CHATID = $1 ORDER BY TIMESTAMP ASC'
+  let query = 'SELECT MESSAGE, TIMESTAMP, MEMBERID FROM MESSAGES WHERE CHATID = $1 ORDER BY TIMESTAMP ASC'
   db.manyOrNone(query, [chatId])
   .then((rows) => {
     res.send({
