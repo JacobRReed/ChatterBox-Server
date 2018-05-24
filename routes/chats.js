@@ -89,7 +89,7 @@ router.post("/removeMember", (req, res) => {
     }).catch((err) => {
       res.send({
         success: false,
-        error: err,
+        error: "the thing you typed in were: " + chatid + " and " + username,
     });
   });
 });
