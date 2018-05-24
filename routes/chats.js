@@ -65,7 +65,7 @@ router.post("/deleteChat", (req, res) => {
 // done
 //var router = express.Router();
 router.post("/addFriendToChat", (req, res) => {
-  let chatid = req.body['chatid'];
+  let chatid = req.body['chatId'];
   let username = req.body['username'];
   let insert = 'INSERT INTO CHATMEMBERS(CHATID, MEMBERID) SELECT $1, (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($2))'
   db.none(insert, [chatid, username])
