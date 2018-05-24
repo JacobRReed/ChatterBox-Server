@@ -33,6 +33,22 @@ router.post("/makeChat", (req, res) => {
   });
 });
 
+router.post("/updateChatName", (req, res) => {
+  let chatid = req.body["chatId"];
+  let newChatName = req.body["newChatName"];
+  let update = 'UPDATE CHATS SET NAME = $2 WHERE CHATID = $1'
+  db.none(insert, [chatid, newChatName])
+    .then(() => {
+      res.send({
+        success: true
+      });
+    }).catch(() => {
+      res.send({
+        success: false
+      });
+    });
+});
+
 router.post("/deleteChat", (req, res) => {
   let name = req.body['name'];
   // let message = req.body['message'];
@@ -175,8 +191,8 @@ router.post("/getChat", (req, res) => {
 //           });
 //         });
 //       }
-      
-      
+
+
 //     }).catch((err) => {
 //       res.send({
 //         success: false,
