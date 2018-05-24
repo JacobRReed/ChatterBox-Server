@@ -39,7 +39,7 @@ router.get("/getMessages", (req, res) => {
     AS Timestamp
     FROM Messages
     INNER JOIN Members ON Messages.MemberId=Members.MemberId WHERE ChatId=$2
-    Timestamp AT THE ZONE 'PDT' > $1
+    Timestamp AT TIME ZONE 'PDT' > $1
     ORDER BY Timestamp ASC`
   db.manyOrNone(query, [after, chatId])
   .then((rows) => {
