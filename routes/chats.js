@@ -37,7 +37,7 @@ router.post("/updateChatName", (req, res) => {
   let chatid = req.body["chatId"];
   let newChatName = req.body["newChatName"];
   let update = 'UPDATE CHATS SET NAME = $2 WHERE CHATID = $1'
-  db.none(insert, [chatid, newChatName])
+  db.none(update, [chatid, newChatName])
     .then(() => {
       res.send({
         success: true
