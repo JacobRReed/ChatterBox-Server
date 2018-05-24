@@ -57,13 +57,18 @@ router.post("/deleteChat", (req, res) => {
     });
   });
 });
+// let insert = 'INSERT INTO Messages(ChatId, Message, MemberId) SELECT $1, $2, MemberId FROM Members WHERE Username=$3'
+//  db.none(insert, [chatId, message, username])
+
+// 'INSERT INTO CHATMEMBERS(CHATID, MEMBERID) VALUES(' + chatid + ', (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER('+ username +')))'
 
 // done
 //var router = express.Router();
 router.post("/addFriendToChat", (req, res) => {
   let chatid = req.body['chatid'];
   let username = req.body['username'];
-  db.none('INSERT INTO CHATMEMBERS(CHATID, MEMBERID) VALUES(' + chatid + ', (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER('+ username +')))')
+  let insert = 'INSERT INTO CHATMEMBERS(CHATID, MEMBERID) SELECT $1, (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($2))'
+  db.none(insert, [chatid, username])
     .then(() => {
       res.send({
         success: true
