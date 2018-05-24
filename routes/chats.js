@@ -80,7 +80,7 @@ router.post("/removeMember", (req, res) => {
   // let message = req.body['message'];
   // let chatId = req.body['chatId'];
 
-  let insert = 'DELETE FROM chatmembers WHERE chatid = $1, (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($2))';
+  let insert = 'DELETE FROM chatmembers WHERE chatid = $1 AND memberid = (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($2));';
   db.none(insert, [chatid, username])
     .then(() => {
       res.send({
