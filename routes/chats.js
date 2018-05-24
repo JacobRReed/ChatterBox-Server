@@ -73,6 +73,26 @@ router.post("/deleteChat", (req, res) => {
     });
   });
 });
+
+router.post("/removeMember", (req, res) => {
+  let username = req.body['username'];
+  let chatid = req.body['chatId'];
+  // let message = req.body['message'];
+  // let chatId = req.body['chatId'];
+
+  let insert = 'DELETE FROM chatmembers WHERE chatid = $1 AND (SELECT MEMBERID FROM MEMBERS WHERE LOWER(USERNAME) = LOWER($2))';
+  db.none(insert, [chatid, username])
+    .then(() => {
+      res.send({
+        success: true
+      });
+    }).catch((err) => {
+      res.send({
+        success: false,
+        error: err,
+    });
+  });
+});
 // let insert = 'INSERT INTO Messages(ChatId, Message, MemberId) SELECT $1, $2, MemberId FROM Members WHERE Username=$3'
 //  db.none(insert, [chatId, message, username])
 
