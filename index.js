@@ -28,7 +28,7 @@ var reg = require('./routes/register.js');
 app.use('/register', reg);
 
 var msg = require('./routes/messages.js');
-app.use('/', msg);
+app.use('/msg', msg);
 
 var friends = require('./routes/friends.js');
 app.use('/friends', friends);
