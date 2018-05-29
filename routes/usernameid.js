@@ -18,7 +18,7 @@ var router = express.Router();
 
 router.get('/', (req,res) => {
     let id = req.body['id'];
-    db.one('SELECT username FROM Members WHERE memberid=$1'. [id])
+    db.one('SELECT username FROM Members WHERE memberid=$1', [id])
     .then(result => {
         res.send({
             username: result
