@@ -34,29 +34,11 @@ router.post("/sendMessages", (req, res) => {
 router.get("/getMessages", (req, res) => {
   let chatId = req.query['chatId'];
   let query = 'SELECT MESSAGE, TIMESTAMP, MEMBERID FROM MESSAGES WHERE CHATID = $1 ORDER BY TIMESTAMP ASC';
-  let resultMessages = [];
   db.manyOrNone(query, [chatId])
   .then((rows) => {
-    for(i=0; i< rows.size; i++) {
-      console.log("Message: " + rows[i].message);
-      db.one('SELECT username FROM Members WHERE memberid=$1', [rows[i].memberid])
-      .then((result) => {
-        console.log("Username:" + result.username);
-        resultMessages.push({
-          message: rows[i].message,
-          username: result.username,
-          timestamp: rows[i].timestamp
-        });
-        res.send({
-          data: resultMessages
-        });
-      }).catch((err) => {
-        res.send({
-          success: false,
-          error: err
-        })
-      });
-    }
+    res.send({
+      messages: rows
+    })
   }).catch((err) => {
     res.send({
       success: false,
