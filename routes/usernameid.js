@@ -16,7 +16,7 @@ let getHash = require('../utilities/utils').getHash;
 
 var router = express.Router();
 
-router.get('/', (req,res) => {
+router.post('/', (req,res) => {
     let id = req.body['id'];
     db.one('SELECT username FROM Members WHERE memberid=$1', [id])
     .then(result => {
