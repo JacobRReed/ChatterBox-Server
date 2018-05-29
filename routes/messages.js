@@ -37,7 +37,7 @@ router.get("/getMessages", (req, res) => {
   let resultMessages = [];
   db.manyOrNone(query, [chatId])
   .then((rows) => {
-    for(int i=0; i< rows.size; i++) {
+    for(i=0; i< rows.size; i++) {
       db.one('SELECT username FROM Members WHERE memberid=$1', [rows[i].memberid])
       .then((result) => {
         resultMessages.push({
