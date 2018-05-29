@@ -48,7 +48,12 @@ router.get("/getMessages", (req, res) => {
         res.send({
           data: resultMessages
         });
-      })
+      }).catch((err) => {
+        res.send({
+          success: false,
+          error: err
+        })
+      });
     }
   }).catch((err) => {
     res.send({
