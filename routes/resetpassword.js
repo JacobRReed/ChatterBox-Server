@@ -138,7 +138,7 @@ router.post('/', (req, res) => {
         let emailAddr = email;
         let subjectLine = "Changed password on ChatterBox";
         let bodyText = "You have changed your password please validate";
-        let htmlText = "<strong>ChatterBox</strong>!\n please click on this link to validate your new password: chatterboxtcss450.herokuapp.com/resetpassword/validatepassword?username=" + username + "&salt=" + salt + "&hash=" + salted_hash;
+        let htmlText = "<strong>ChatterBox</strong>!\n please click on this link to validate your new password: <a href=\"chatterboxtcss450.herokuapp.com/resetpassword/validatepassword?username=" + username + "&salt=" + salt + "&hash=" + salted_hash + "\">Change Password</a>";
         console.log("username=" + username + "&salt=" + salt + "&hash=" + salted_hash);
          const msg = {
             to: emailAddr,
@@ -150,7 +150,8 @@ router.post('/', (req, res) => {
 
           sgMail.send(msg);
           res.send({
-            result: "true"
+            username: true,
+            email: true
           });
       // const sgMail = require('@sendgrid/mail');
       // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
