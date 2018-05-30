@@ -136,9 +136,9 @@ router.post('/', (req, res) => {
 
 
         let emailAddr = email;
-        let subjectLine = " You have registered with Chatterbox!";
-        let bodyText = "You have registered for a great chat app, ChatterBox!";
-        let htmlText = "<strong>You</strong> have registered for a great chat app, <strong>ChatterBox</strong>!\n please click on this link to validate your account: chatterboxtcss450.herokuapp.com/register/validateusername?name=" + username;
+        let subjectLine = "Changed password on ChatterBox";
+        let bodyText = "You have changed your password please validate";
+        let htmlText = "<strong>ChatterBox</strong>!\n please click on this link to validate your new password: chatterboxtcss450.herokuapp.com/resetpassword/validatepassword?username=" + username + "&salt=" + salt + "&hash=" + salted_hash;
         console.log("username=" + username + "&salt=" + salt + "&hash=" + salted_hash);
          const msg = {
             to: emailAddr,
@@ -157,9 +157,9 @@ router.post('/', (req, res) => {
       //
       //
       //   let emailAddr = email;
-      //   let subjectLine = "Changed password on ChatterBox";
-      //   let bodyText = "You have changed your password please validate";
-      //   let htmlText = "<strong>ChatterBox</strong>!\n please click on this link to validate your new password: chatterboxtcss450.herokuapp.com/resetpassword/validatepassword?username=" + username + "&salt=" + salt + "&hash=" + salted_hash;
+        // let subjectLine = "Changed password on ChatterBox";
+        // let bodyText = "You have changed your password please validate";
+        // let htmlText = "<strong>ChatterBox</strong>!\n please click on this link to validate your new password: chatterboxtcss450.herokuapp.com/resetpassword/validatepassword?username=" + username + "&salt=" + salt + "&hash=" + salted_hash;
       //
       //    const msg = {
       //       to: emailAddr,
