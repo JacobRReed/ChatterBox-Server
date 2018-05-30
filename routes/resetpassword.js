@@ -47,9 +47,9 @@ router.post('/', (req, res) => {
     .then(() => {
         db.none('UPDATE MEMBERS SET Password=$2, Salt=$3 WHERE username=$1', passwordparams)
         // UPDATE MEMBERS SET password = 'gg', salt = 'ggez' WHERE username = 'thomas5862';
-        .then(() => { 
+        .then(() => {
             //We successfully added the new password, let the user know
-            
+
             const sgMail = require('@sendgrid/mail');
             sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -58,6 +58,8 @@ router.post('/', (req, res) => {
             let subjectLine = " Chatterbox Password Changed!";
             let bodyText = "You have recently changed your password on Chatterbox.";
             let htmlText = "<strong>You</strong> have recently changed your password on <strong>ChatterBox</strong>.";
+
+
 
             const msg = {
                 to: emailAddr,
@@ -79,7 +81,7 @@ router.post('/', (req, res) => {
                 email: false,
                 error: 'error1: ' + username + ' and ' + email
             });
-        });  
+        });
     }).catch((err) => {
         //log the error
         console.log(err);
