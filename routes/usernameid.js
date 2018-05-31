@@ -17,11 +17,11 @@ let getHash = require('../utilities/utils').getHash;
 var router = express.Router();
 
 router.post('/', (req,res) => {
-    let id = req.body['id'];
-    db.one('SELECT username FROM Members WHERE memberid=$1', [id])
+    let id = req.body['username'];
+    db.one('SELECT memberid FROM Members WHERE username LIKE($1)', [username])
     .then(result => {
         res.send({
-            username: result
+            id: result
         });
     }).catch(err => {
         res.send({
